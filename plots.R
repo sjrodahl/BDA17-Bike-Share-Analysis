@@ -16,3 +16,5 @@ ggplot(data=trip.gender) + geom_histogram(aes(x=gender),  fill = "#FF9911", colo
 
 males.df <- subset(trip.df, gender=="Male")
 females.df <- subset(trip.df, gender =="Female")
+
+ggplot(data=trip.df) + geom_histogram(aes(x=from_station_name), stat="count",  fill = "#FF9911", colour = "black")
