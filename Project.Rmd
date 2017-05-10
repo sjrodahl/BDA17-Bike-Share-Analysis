@@ -31,8 +31,6 @@ stations<-read.csv("station.csv")
 
 
 ```{r}
-#plotting barplot of birthyear
-p1 <- ggplot(data = subset(trips, !is.na(gender)),aes(x = birthyear)) + geom_bar()
 
 #plot various date-time observations, need to transform data to dates, first to characters
 
@@ -77,8 +75,15 @@ trips$onlyDate<-as.Date(trips$startDate)
 trips$onlyDate<-factor(trips$onlyDate)
 
 #------------add age in years for users
-trips$thisYear<-
-trips$age<-as.numeric()
+trips$age<-2017 - trips$birthyear
+
+
+#----------general distribution plots------
+#agedistribution over trips
+ p1 <- ggplot(data = trips, aes(x = age)) + geom_histogram(binwidth = 1, color='black',fill='orange') + scale_x_continuous(breaks = seq(15,81,5))
+p1
+
+#boxplot of age
 
 
 #------------plots for tripduration--------
@@ -102,14 +107,21 @@ tripDurBox<-ggplot(data = trips, aes(x = factor(0), y = tripduration)) + geom_bo
 #trips$date, and plot number of trips under different weatherconditions, and 
 #only compare weekdays with weekdays and weekends with weekends
 
-#need to factorize weather$date first
+#need to defactorize weather$date first
 
 weather$Date<-(as.character(weather$Date))
+weather$Date<-(as.Date(weather$Date,format = "%m/%d/%Y"))
 
 
 #-------------Predict number of a usergroup at a given station in a timerange--------
 
 
+
+
+
+#--------------merge weatherdata into trips-------
+
+trips<-merge(trips,weather, by.y = "Date", by.x = "onlyDate")
 
 ```
 
