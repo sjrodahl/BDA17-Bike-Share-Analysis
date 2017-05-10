@@ -31,51 +31,57 @@ stations<-read.csv("station.csv")
 
 
 ```{r}
-#plotting barplot of birthyear
-p1 <- ggplot(data = subset(trips, !is.na(gender)),aes(x = birthyear)) + geom_bar()
-p2 <- ggplot(data = trips, aes(x = gender, )) + geom_boxplot()
 
 #plot various date-time observations, need to transform data to dates, first to characters
+TransformDateVariables <- function(){
+  ###
+  ### Transforms the endDate and startDate features to the following:
+  ### ### startDate/endDate: POSIXct format: Y-m-d H:M;S Internal value stored as seconds since Jan 1st, 1970
+  ### ### sDay/eDay: Weekday of trip
+  ### ### sMonth/s/Day: Month of trip
+  ### ### sYear/eYear: Year of trip
+  ### ### sSeconds/eSeconds: Seconds since Jan 1st, 1970
+  ### ### sHour/eHour: Hourmark of trip
+  ### ### sMinutes: Minutemark of trip
+  ###
+  #-----------convert to characters----------- (don't need if stringsAsFactors = TRUE)
+  trips$startDate<- as.character(trips$starttime) #to characters
+  trips$endDate<- as.character(trips$stoptime) #to characters
+  
+  #------------add startdate and enddate as POSIXct
+  trips$startDate <- as.POSIXct(trips$startDate,format="%m/%d/%Y %H:%M") #to dates
+  trips$endDate <- as.POSIXct(trips$endDate,format="%m/%d/%Y %H:%M") #to dates
+  #now format = Y-m-d H:M:S
+  
+  #------------add day of week, from startDate
+  trips$sDay<- wday(trips$startDate, label = TRUE)
+  trips$eDay<- wday(trips$endDate, label = TRUE)
+  
+  #------------add month, from startDate
+  trips$sMonth<-month(trips$startDate, label = TRUE)
+  trips$eMonth<-month(trips$endDate, label = TRUE)
+  
+  #------------add year, from startDate
+  trips$sYear<-year(trips$startDate)
+  trips$eYear<-year(trips$endDate)
+  
+  #------------add seconds since jan 1 1970, from startDate
+  trips$sSeconds<-as.numeric(trips$startDate)
+  trips$eSeconds<-as.numeric(trips$endDate)
+  
+  #-------------add hour from startDate
+  trips$sHour<-hour(trips$startDate)
+  trips$eHour<-hour(trips$endDate)
+  
+  #-----------add minute from startDate
+  trips$sMinute<-minute(trips$startDate)
+  trips$eMinute<-minute(trips$endDate)
+  
+}
 
-#-----------convert to characters----------- (don't need if stringsAsFactors = TRUE)
-trips$startDate<- as.character(trips$starttime) #to characters
-trips$endDate<- as.character(trips$stoptime) #to characters
-
-#------------add startdate and enddate as POSIXct
-trips$startDate <- as.POSIXct(trips$startDate,format="%m/%d/%Y %H:%M") #to dates
-trips$endDate <- as.POSIXct(trips$endDate,format="%m/%d/%Y %H:%M") #to dates
-#now format = Y-m-d H:M:S
-
-#------------add day of week, from startDate
-trips$sDay<- wday(trips$startDate, label = TRUE)
-trips$eDay<- wday(trips$endDate, label = TRUE)
-
-#------------add month, from startDate
-trips$sMonth<-month(trips$startDate, label = TRUE)
-trips$eMonth<-month(trips$endDate, label = TRUE)
-
-#------------add year, from startDate
-trips$sYear<-year(trips$startDate)
-trips$eYear<-year(trips$endDate)
-
-#------------add seconds since jan 1 1970, from startDate
-trips$sSeconds<-as.numeric(trips$startDate)
-trips$eSeconds<-as.numeric(trips$endDate)
-
-#-------------add hour from startDate
-trips$sHour<-hour(trips$startDate)
-trips$eHour<-hour(trips$endDate)
-
-#-----------add minute from startDate
-trips$sMinute<-minute(trips$startDate)
-trips$eMinute<-minute(trips$endDate)
+TransformDateVariables()
 
 
-
-ggplot(aes(x = startDate), data = trips) + geom_histogram()
-
-
-ggplot(data = trips, aes(x = startDate)) + geom_histogram(binwidth=30) + scale_x_datetime(date_breaks = "years")
 
 
 ```
