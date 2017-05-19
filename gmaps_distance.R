@@ -1,4 +1,7 @@
 ## Fetching distance from Google Maps
+
+### This script does not need to be run again. Results are stored in csv-files
+
 library(readr)
 library(gmapsdistance)
 setwd("D:/Sondre/Dokumenter/UCSD/IRGN452 BigDataAnalytics/Project/BDA17-Bike-Share-Analysis/")
@@ -20,27 +23,21 @@ distance.matrix.coord <- gmapsdistance(origin = stations.coordinates.top3,
                                  key= gmapsKey,
                                  mode="bicycling")
 
+
+#Write csv-file
+write.csv(distance.matrix.coord, file = 'distanceMatrix.csv')
+
+#write csv file for each dataframe
+
+write.csv(distance.matrix.coord$Time, file = 'gmapsTimeMatrix.csv')
+write.csv(distance.matrix.coord$Distance, file = 'gmapsDistMatrix.csv')
+write.csv(distance.matrix.coord$Status, file = 'gmapsStatusMatrix.csv')
 # Import some trips
 
-trips<-read.csv("data/trip.csv", nrows=1000)
+#trips<-read.csv("data/trip.csv", nrows=1000)
 
 # Add ID variable to stations.df
-stations.df$ID <- 1:nrow(stations.df)
+#stations.df$ID <- 1:nrow(stations.df)
 
 
-#
-# @param origin: station id of origin station
-# @param destination: station id of destination station
-# @return matrix: [time, distance] where time is in seconds, distance is in meters
-getTimeAndDist<- function(origin, destination){
-  O <- stations.df$station_id == origin
-  rowIndex <- stations.df[O, ]$ID
-  D <- stations.df$station_id == destination
-  columnIndex <- stations.df[D, ]$ID + 1
-  time <- distance.matrix.coord$Time[rowIndex, columnIndex]
-  dist <- distance.matrix.coord$Distance[rowIndex, columnIndex]
-  retList <- list(time=time, dist=dist)
-  return(retList)
-}
-
-time1 <- getTimeAndDist(stations.df$station_id[1], stations.df$station_id[2])
+#time1 <- getTimeAndDist(stations.df$station_id[1], stations.df$station_id[2])
