@@ -36,8 +36,7 @@ write.csv(distance.matrix.coord$Status, file = 'gmapsStatusMatrix.csv')
 
 #trips<-read.csv("data/trip.csv", nrows=1000)
 
-# Add ID variable to stations.df
-#stations.df$ID <- 1:nrow(stations.df)
+
 
 
 #time1 <- getTimeAndDist(stations.df$station_id[1], stations.df$station_id[2])
