@@ -87,15 +87,15 @@ p1
 
 
 #------------plots for tripduration--------
-tripDurLogHist<-ggplot(aes(x = tripduration), data = trips) + geom_histogram() + 
+tripDurLogHist<-ggplot(aes(x = tripduration), data = trips) + geom_histogram(color='black',fill='orange') + 
   scale_x_log10()
 tripDurLogHist
 
-tripDurContHist<-ggplot(aes(x = tripduration), data = trips) + geom_histogram() + 
+tripDurContHist<-ggplot(aes(x = tripduration), data = trips) + geom_histogram(color='black',fill='orange') + 
   scale_x_continuous()
 tripDurContHist
 
-tripDurSqrtHist<-ggplot(aes(x = tripduration), data = trips) + geom_histogram() + 
+tripDurSqrtHist<-ggplot(aes(x = tripduration), data = trips) + geom_histogram(color='black',fill='orange') + 
   scale_x_sqrt()
 
 tripDurBox<-ggplot(data = trips, aes(x = factor(0), y = tripduration)) + geom_boxplot() + scale_y_continuous(limits = c(0,1500)) + coord_flip()
@@ -111,6 +111,15 @@ tripDurBox<-ggplot(data = trips, aes(x = factor(0), y = tripduration)) + geom_bo
 
 weather$Date<-(as.character(weather$Date))
 weather$Date<-(as.Date(weather$Date,format = "%m/%d/%Y"))
+
+tripsByEvents<-ggplot(data = trips, aes(x = Events, y = tripduration)) + geom_boxplot()  #scale_y_continuous(limits = c(0,1500)) + coord_flip()
+tripsBy<-ggplot(data = trips, aes(x = )) + geom_histogram(color='black',fill='orange')
+tripsBy
+
+#plotting by temperature reveals more trips when its warmer, but migth need to 
+#divide by total days of this temperature?
+
+
 
 
 #-------------Predict number of a usergroup at a given station in a timerange--------
