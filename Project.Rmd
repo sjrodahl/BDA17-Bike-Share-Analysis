@@ -67,6 +67,13 @@ trips$eHour<-hour(trips$endDate)
 trips$sMinute<-minute(trips$startDate)
 trips$eMinute<-minute(trips$endDate)
 
+#---------add holiday and weekday as false/true from startDate
+trips$weekday<-isWeekday(trips$startDate,wday = 1:5)
+trips$holiday<-is.holiday(trips$startDate)
+
+
+
+
 ggplot(aes(x = startDate), data = trips) + geom_histogram()
 
 #-----------add onlyDate as factorized version of date, to use in comparison with weather data
@@ -85,6 +92,10 @@ p1
 
 #boxplot of age
 
+#--------------merge weatherdata into trips-------
+weather$Date<-factor(weather$Date)
+trips<-merge(trips,weather, by.y = "Date", by.x = "onlyDate")
+
 
 #------------plots for tripduration--------
 tripDurLogHist<-ggplot(aes(x = tripduration), data = trips) + geom_histogram(color='black',fill='orange') + 
@@ -98,7 +109,7 @@ tripDurContHist
 tripDurSqrtHist<-ggplot(aes(x = tripduration), data = trips) + geom_histogram(color='black',fill='orange') + 
   scale_x_sqrt()
 
-tripDurBox<-ggplot(data = trips, aes(x = factor(0), y = tripduration)) + geom_boxplot() + scale_y_continuous(limits = c(0,1500)) + coord_flip()
+tripDurBox<-ggplot(data = trips, aes(x = factor(0), y = tripduration)) + geom_boxplot() + scale_y_continuous(limits = c(0,1000)) + coord_flip()
 
 
 
@@ -112,17 +123,48 @@ tripDurBox<-ggplot(data = trips, aes(x = factor(0), y = tripduration)) + geom_bo
 weather$Date<-(as.character(weather$Date))
 weather$Date<-(as.Date(weather$Date,format = "%m/%d/%Y"))
 
-tripsByEvents<-ggplot(data = trips, aes(x = Events, y = tripduration)) + geom_boxplot()  #scale_y_continuous(limits = c(0,1500)) + coord_flip()
-tripsBy<-ggplot(data = trips, aes(x = )) + geom_histogram(color='black',fill='orange')
-tripsBy
+tripDurByEventsBox<-ggplot(data = trips, aes(x = Events, y = tripduration)) + geom_boxplot()  #scale_y_continuous(limits = c(0,1500)) + coord_flip()
+
+
+tripsByHour<-ggplot(data = trips, aes(x = sHour)) + 
+  geom_histogram(color='black',fill='orange', binwidth = 1) +
+scale_x_continuous(breaks = seq(0,24,1))
+
+tripsByMinute<-ggplot(data = trips, aes(x = sMinute)) + 
+  geom_histogram(color='black',fill='orange', binwidth = 2) +
+scale_x_continuous(breaks = seq(0,60,5))
+
+tripDurByDay<-ggplot(data = trips, aes(x = sDay, y = )) + geom_boxplot()
+
+
+#-----------Weather-------
+tripsByMinTemp<-ggplot(data = trips, aes(x = Min_TemperatureF)) + 
+  geom_histogram(color='black',fill='orange') +
+scale_x_continuous()
+
+tripsByRainInch<-ggplot(data = trips, aes(x = Precipitation_In)) + 
+  geom_histogram(color='black',fill='orange') +
+scale_x_continuous()
+
+tripsByMeanTemp<-ggplot(data = trips, aes(x = Mean_TemperatureF)) + 
+  geom_histogram(color='black',fill='orange') +
+scale_x_continuous()
 
 #plotting by temperature reveals more trips when its warmer, but migth need to 
-#divide by total days of this temperature?
+#divide by total days of this temperature? as well as for rainy days, need to divide
+#number of trips on rainy days in total to compare with non-rainy days
 
 
 
 
 #-------------Predict number of a usergroup at a given station in a timerange--------
+#first need to create an array with time-intervals, 24hours, factorize
+#then create new variable, and graph by that variable
+
+#could also be intersting to look into when people rent bicycles (after whole hours)
+
+
+
 
 #-------------Time and distance------
 # Add ID variable to stations
@@ -145,11 +187,6 @@ getGoogleInfo<- function(origin, destination, df){
 trips[,"timeEst"] <- apply(trips[,c("from_station_id", "to_station_id")], 1, function(x) getGoogleInfo(x[1],x[2], time.matrix))
 trips[,"distanceEst"] <- apply(trips[,c("from_station_id", "to_station_id")], 1, function(x) getGoogleInfo(x[1],x[2], distance.matrix))
 
-
-
-#--------------merge weatherdata into trips-------
-
-trips<-merge(trips,weather, by.y = "Date", by.x = "onlyDate")
 
 ```
 
