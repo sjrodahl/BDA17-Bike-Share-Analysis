@@ -124,7 +124,26 @@ tripsBy
 
 #-------------Predict number of a usergroup at a given station in a timerange--------
 
+#-------------Time and distance------
+# Add ID variable to stations
+stations$ID <- 1:nrow(stations)
 
+#
+# @param origin: station id of origin station
+# @param destination: station id of destination station
+# @return time: time in seconds, distance is in meters
+getGoogleInfo<- function(origin, destination, df){
+  O <- stations$station_id == origin
+  rowIndex <- stations[O, ]$ID
+  D <- stations$station_id == destination
+  columnIndex <- stations[D, ]$ID + 2
+  res <- df[rowIndex, columnIndex]
+  return(res)
+}
+
+#Add time and distance columns to dataset
+trips[,"timeEst"] <- apply(trips[,c("from_station_id", "to_station_id")], 1, function(x) getGoogleInfo(x[1],x[2], time.matrix))
+trips[,"distanceEst"] <- apply(trips[,c("from_station_id", "to_station_id")], 1, function(x) getGoogleInfo(x[1],x[2], distance.matrix))
 
 
 
