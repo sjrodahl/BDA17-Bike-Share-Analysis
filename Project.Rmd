@@ -1,0 +1,163 @@
+---
+title: "BDA bike share"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## R Markdown
+
+This is an R Markdown document. Markdown is a simple formatting syntax for authoring HTML, PDF, and MS Word documents. For more details on using R Markdown see <http://rmarkdown.rstudio.com>.
+
+When you click the **Knit** button a document will be generated that includes both content as well as the output of any embedded R code chunks within the document. You can embed an R code chunk like this:
+
+
+
+```{r}
+library(ggplot2)
+library(caret)
+library(tidyr)
+library(dplyr)
+library(lattice)
+library(lubridate)
+
+#Comment out the other user.
+#setwd("/Users/tormagnusmichaelsen/Documents/BDA/Project/BDA17-Bike-Share-Analysis/data")
+setwd("D:/Sondre/Dokumenter/UCSD/IRGN452 BigDataAnalytics/Project/BDA17-Bike-Share-Analysis/")
+
+trips<-read.csv("data/trip.csv", nrows=1000) #Set nrows for testing purposes
+weather<-read.csv("data/weather.csv")
+stations<-read.csv("data/station.csv")
+
+distance.matrix <- read.csv("gmapsData/gmapsDistMatrix.csv")
+time.matrix <- read.csv("gmapsData/gmapsTimeMatrix.csv")
+```
+
+
+```{r}
+
+#plot various date-time observations, need to transform data to dates, first to characters
+
+#-----------convert to characters----------- (don't need if stringsAsFactors = FALSE)
+trips$startDate<- as.character(trips$starttime) #to characters
+trips$endDate<- as.character(trips$stoptime) #to characters
+
+#------------add startdate and enddate as POSIXct
+trips$startDate <- as.POSIXct(trips$startDate,format="%m/%d/%Y %H:%M") #to dates
+trips$endDate <- as.POSIXct(trips$endDate,format="%m/%d/%Y %H:%M") #to dates
+#now format = Y-m-d H:M:S
+
+#------------add day of week, from startDate
+trips$sDay<- wday(trips$startDate, label = TRUE)
+trips$eDay<- wday(trips$endDate, label = TRUE)
+
+#------------add month, from startDate
+trips$sMonth<-month(trips$startDate, label = TRUE)
+trips$eMonth<-month(trips$endDate, label = TRUE)
+
+#------------add year, from startDate
+trips$sYear<-year(trips$startDate)
+trips$eYear<-year(trips$endDate)
+
+#------------add seconds since jan 1 1970, from startDate
+trips$sSeconds<-as.numeric(trips$startDate)
+trips$eSeconds<-as.numeric(trips$endDate)
+
+#-------------add hour from startDate
+trips$sHour<-hour(trips$startDate)
+trips$eHour<-hour(trips$endDate)
+
+#-----------add minute from startDate
+trips$sMinute<-minute(trips$startDate)
+trips$eMinute<-minute(trips$endDate)
+
+ggplot(aes(x = startDate), data = trips) + geom_histogram()
+
+#-----------add onlyDate as factorized version of date, to use in comparison with weather data
+
+trips$onlyDate<-as.Date(trips$startDate)
+trips$onlyDate<-factor(trips$onlyDate)
+
+#------------add age in years for users
+trips$age<-2017 - trips$birthyear
+
+
+#----------general distribution plots------
+#agedistribution over trips
+ p1 <- ggplot(data = trips, aes(x = age)) + geom_histogram(binwidth = 1, color='black',fill='orange') + scale_x_continuous(breaks = seq(15,81,5))
+p1
+
+#boxplot of age
+
+
+#------------plots for tripduration--------
+tripDurLogHist<-ggplot(aes(x = tripduration), data = trips) + geom_histogram() + 
+  scale_x_log10()
+tripDurLogHist
+
+tripDurContHist<-ggplot(aes(x = tripduration), data = trips) + geom_histogram() + 
+  scale_x_continuous()
+tripDurContHist
+
+tripDurSqrtHist<-ggplot(aes(x = tripduration), data = trips) + geom_histogram() + 
+  scale_x_sqrt()
+
+tripDurBox<-ggplot(data = trips, aes(x = factor(0), y = tripduration)) + geom_boxplot() + scale_y_continuous(limits = c(0,1500)) + coord_flip()
+
+
+
+#-----------Relations between weather and trips-------
+#need to compare factors in weather$date and 
+#trips$date, and plot number of trips under different weatherconditions, and 
+#only compare weekdays with weekdays and weekends with weekends
+
+#need to defactorize weather$date first
+
+weather$Date<-(as.character(weather$Date))
+weather$Date<-(as.Date(weather$Date,format = "%m/%d/%Y"))
+
+
+#-------------Predict number of a usergroup at a given station in a timerange--------
+
+
+
+
+
+#--------------merge weatherdata into trips-------
+#Commented this out due to bug:
+#trips<-merge(trips,weather, by.y = "Date", by.x = "onlyDate")
+
+
+
+#-------------Add time and distance estimates from google maps ------------
+
+# Add ID variable to stations
+stations$ID <- 1:nrow(stations)
+
+#
+# @param origin: station id of origin station
+# @param destination: station id of destination station
+# @return time: time in seconds, distance is in meters
+getGoogleInfo<- function(origin, destination, df){
+  O <- stations$station_id == origin
+  rowIndex <- stations[O, ]$ID
+  D <- stations$station_id == destination
+  columnIndex <- stations[D, ]$ID + 2
+  res <- df[rowIndex, columnIndex]
+  return(res)
+}
+
+#Add time and distance columns to dataset
+trips[,"timeEst"] <- apply(trips[,c("from_station_id", "to_station_id")], 1, function(x) getGoogleInfo(x[1],x[2], time.matrix))
+trips[,"distanceEst"] <- apply(trips[,c("from_station_id", "to_station_id")], 1, function(x) getGoogleInfo(x[1],x[2], distance.matrix))
+
+
+```
+
+
+
+
+
+
