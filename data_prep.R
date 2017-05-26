@@ -87,6 +87,12 @@ trips<-merge(trips,weather, by.y = "onlyDate", by.x = "onlyDate")
 #trips$to_lat<-stations$lat[match(trips$to_station_id,stations$station_id)]
 
 #--------generate new array to store all combinations of trips with coordinates
+#first create matrix with all possible combinations, then add coordinates to this
+
+tripcombs<-combn(stations$station_id, 2)
+tripcombs<-t(tripcombs)
+tripcombs<-as.data.frame.matrix(tripcombs)
+
 
 tripcombs$from_long<-stations$long[match(tripcombs$V1,stations$station_id)]
 tripcombs$from_lat<-stations$lat[match(tripcombs$V1,stations$station_id)]
