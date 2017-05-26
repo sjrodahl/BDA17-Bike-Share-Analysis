@@ -1,6 +1,9 @@
 # API-keys
 gmapsAPIkey.txt
 
+#Mac-shit
+.DS_Store
+
 # History files
 .Rhistory
 .Rapp.history
