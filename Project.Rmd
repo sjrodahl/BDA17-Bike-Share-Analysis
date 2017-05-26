@@ -199,6 +199,9 @@ seattle<-get_map("seattle", color = "color",
 map<-ggmap(seattle,extent = "normal") + geom_curve(data = tripcombs, aes(x = from_long,y = from_lat, xend = to_long, yend = to_lat), angle = 45, color = "blue") + coord_cartesian()
 
 
+###change
+
+
 
 ```
 
