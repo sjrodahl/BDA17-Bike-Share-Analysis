@@ -26,10 +26,16 @@ library(ggmap) #remember to cite ggmap
 library(timeDate)
 library(chron)
 
-setwd("/Users/tormagnusmichaelsen/Documents/BDA/Project/BDA17-Bike-Share-Analysis/data")
-trips<-read.csv("trip.csv")
-weather<-read.csv("weather.csv")
-stations<-read.csv("station.csv")
+#Comment out the other user.
+#setwd("/Users/tormagnusmichaelsen/Documents/BDA/Project/BDA17-Bike-Share-Analysis/data")
+setwd("D:/Sondre/Dokumenter/UCSD/IRGN452 BigDataAnalytics/Project/BDA17-Bike-Share-Analysis/")
+
+trips<-read.csv("data/trip.csv", nrows=1000) #Set nrows for testing purposes
+weather<-read.csv("data/weather.csv")
+stations<-read.csv("data/station.csv")
+
+distance.matrix <- read.csv("gmapsData/gmapsDistMatrix.csv")
+time.matrix <- read.csv("gmapsData/gmapsTimeMatrix.csv")
 ```
 
 
@@ -179,7 +185,21 @@ scale_x_continuous()
 #divide by total days of this temperature? as well as for rainy days, need to divide
 #number of trips on rainy days in total to compare with non-rainy days
 
+# Add ID variable to stations
+stations$ID <- 1:nrow(stations)
 
+#
+# @param origin: station id of origin station
+# @param destination: station id of destination station
+# @return time: time in seconds, distance is in meters
+getGoogleInfo<- function(origin, destination, df){
+  O <- stations$station_id == origin
+  rowIndex <- stations[O, ]$ID
+  D <- stations$station_id == destination
+  columnIndex <- stations[D, ]$ID + 2
+  res <- df[rowIndex, columnIndex]
+  return(res)
+}
 
 
 #-------------Predict number of a usergroup at a given station in a timerange--------
@@ -202,6 +222,9 @@ map<-ggmap(seattle,extent = "normal") + geom_curve(data = tripcombs, aes(x = fro
 
 
 ###change
+#Add time and distance columns to dataset
+trips[,"timeEst"] <- apply(trips[,c("from_station_id", "to_station_id")], 1, function(x) getGoogleInfo(x[1],x[2], time.matrix))
+trips[,"distanceEst"] <- apply(trips[,c("from_station_id", "to_station_id")], 1, function(x) getGoogleInfo(x[1],x[2], distance.matrix))
 
 
 
