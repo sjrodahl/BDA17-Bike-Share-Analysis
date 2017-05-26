@@ -23,6 +23,8 @@ library(dplyr)
 library(lattice)
 library(lubridate)
 library(ggmap) #remember to cite ggmap
+library(timeDate)
+library(chron)
 
 setwd("/Users/tormagnusmichaelsen/Documents/BDA/Project/BDA17-Bike-Share-Analysis/data")
 trips<-read.csv("trip.csv")
