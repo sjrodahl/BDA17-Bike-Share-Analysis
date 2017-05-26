@@ -9,8 +9,6 @@ knitr::opts_chunk$set(echo = TRUE)
 
 ## R Markdown
 ```{r}
-
-
 #----------general distribution plots------
 
 #agedistribution over trips
@@ -109,7 +107,7 @@ seattle<-get_map(location = c(-122.36,47.58,-122.26,47.69), color = "color",
       
 map1<-ggmap(seattle,extent = "normal") + geom_curve(data = tripcombs, aes(x = from_long,y = from_lat, xend = to_long, yend = to_lat), angle = 45, color = "blue") + coord_cartesian()
 
-from_stations<-ggmap(seattle,extent = "normal") + geom_curve(data = trips, aes(x = from_long,y = from_lat, xend = to_long, yend = to_lat), angle = 45, color = "blue") + coord_cartesian()
+from_stations<-ggmap(seattle,extent = "normal") + geom_point(data = trips, aes(x = from_long,y = from_lat), color = "blue") + coord_cartesian()
 
 
 
