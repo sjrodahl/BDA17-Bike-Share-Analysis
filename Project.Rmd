@@ -22,6 +22,9 @@ library(tidyr)
 library(dplyr)
 library(lattice)
 library(lubridate)
+library(ggmap) #remember to cite ggmap
+library(timeDate)
+library(chron)
 
 #Comment out the other user.
 #setwd("/Users/tormagnusmichaelsen/Documents/BDA/Project/BDA17-Bike-Share-Analysis/data")
@@ -73,6 +76,13 @@ trips$eHour<-hour(trips$endDate)
 trips$sMinute<-minute(trips$startDate)
 trips$eMinute<-minute(trips$endDate)
 
+#---------add holiday and weekday as false/true from startDate
+trips$weekday<-isWeekday(trips$startDate,wday = 1:5)
+trips$holiday<-is.holiday(trips$startDate)
+
+
+
+
 ggplot(aes(x = startDate), data = trips) + geom_histogram()
 
 #-----------add onlyDate as factorized version of date, to use in comparison with weather data
@@ -89,22 +99,48 @@ trips$age<-2017 - trips$birthyear
  p1 <- ggplot(data = trips, aes(x = age)) + geom_histogram(binwidth = 1, color='black',fill='orange') + scale_x_continuous(breaks = seq(15,81,5))
 p1
 
+#----------station plot--------
+stationDistr<-ggplot(data = trips, aes(x = to_station_name)) + geom_bar(color='black',fill='orange') + 
+  theme(axis.text.x = element_text(angle = 60, hjust = 1))
+
+
 #boxplot of age
+
+#--------------merge weatherdata into trips-------
+weather$Date<-factor(weather$Date)
+trips<-merge(trips,weather, by.y = "Date", by.x = "onlyDate")
+
+#-------------merge stationcoordinates into trips---------
+#syntax table1$val2 <- table2$val2[match(table1$pid, table2$pid)]
+
+#trips$from_long<-stations$long[match(trips$from_station_id,stations$station_id)]
+#trips$from_lat<-stations$lat[match(trips$from_station_id,stations$station_id)]
+
+#trips$to_long<-stations$long[match(trips$to_station_id,stations$station_id)]
+#trips$to_lat<-stations$lat[match(trips$to_station_id,stations$station_id)]
+
+#--------generate new array to store all combinations of trips with coordinates
+
+tripcombs$from_long<-stations$long[match(tripcombs$V1,stations$station_id)]
+tripcombs$from_lat<-stations$lat[match(tripcombs$V1,stations$station_id)]
+
+tripcombs$to_long<-stations$long[match(tripcombs$V2,stations$station_id)]
+tripcombs$to_lat<-stations$lat[match(tripcombs$V2,stations$station_id)]
 
 
 #------------plots for tripduration--------
-tripDurLogHist<-ggplot(aes(x = tripduration), data = trips) + geom_histogram() + 
+tripDurLogHist<-ggplot(aes(x = tripduration), data = trips) + geom_histogram(color='black',fill='orange') + 
   scale_x_log10()
 tripDurLogHist
 
-tripDurContHist<-ggplot(aes(x = tripduration), data = trips) + geom_histogram() + 
+tripDurContHist<-ggplot(aes(x = tripduration), data = trips) + geom_histogram(color='black',fill='orange') + 
   scale_x_continuous()
 tripDurContHist
 
-tripDurSqrtHist<-ggplot(aes(x = tripduration), data = trips) + geom_histogram() + 
+tripDurSqrtHist<-ggplot(aes(x = tripduration), data = trips) + geom_histogram(color='black',fill='orange') + 
   scale_x_sqrt()
 
-tripDurBox<-ggplot(data = trips, aes(x = factor(0), y = tripduration)) + geom_boxplot() + scale_y_continuous(limits = c(0,1500)) + coord_flip()
+tripDurBox<-ggplot(data = trips, aes(x = factor(0), y = tripduration)) + geom_boxplot() + scale_y_continuous(limits = c(0,1000)) + coord_flip()
 
 
 
@@ -118,20 +154,36 @@ tripDurBox<-ggplot(data = trips, aes(x = factor(0), y = tripduration)) + geom_bo
 weather$Date<-(as.character(weather$Date))
 weather$Date<-(as.Date(weather$Date,format = "%m/%d/%Y"))
 
-
-#-------------Predict number of a usergroup at a given station in a timerange--------
-
+tripDurByEventsBox<-ggplot(data = trips, aes(x = Events, y = tripduration)) + geom_boxplot()  #scale_y_continuous(limits = c(0,1500)) + coord_flip()
 
 
+tripsByHour<-ggplot(data = trips, aes(x = sHour)) + 
+  geom_histogram(color='black',fill='orange', binwidth = 1) +
+scale_x_continuous(breaks = seq(0,24,1))
+
+tripsByMinute<-ggplot(data = trips, aes(x = sMinute)) + 
+  geom_histogram(color='black',fill='orange', binwidth = 2) +
+scale_x_continuous(breaks = seq(0,60,5))
+
+tripDurByDay<-ggplot(data = trips, aes(x = sDay, y = )) + geom_boxplot()
 
 
-#--------------merge weatherdata into trips-------
-#Commented this out due to bug:
-#trips<-merge(trips,weather, by.y = "Date", by.x = "onlyDate")
+#-----------Weather-------
+tripsByMinTemp<-ggplot(data = trips, aes(x = Min_TemperatureF)) + 
+  geom_histogram(color='black',fill='orange') +
+scale_x_continuous()
 
+tripsByRainInch<-ggplot(data = trips, aes(x = Precipitation_In)) + 
+  geom_histogram(color='black',fill='orange') +
+scale_x_continuous()
 
+tripsByMeanTemp<-ggplot(data = trips, aes(x = Mean_TemperatureF)) + 
+  geom_histogram(color='black',fill='orange') +
+scale_x_continuous()
 
-#-------------Add time and distance estimates from google maps ------------
+#plotting by temperature reveals more trips when its warmer, but migth need to 
+#divide by total days of this temperature? as well as for rainy days, need to divide
+#number of trips on rainy days in total to compare with non-rainy days
 
 # Add ID variable to stations
 stations$ID <- 1:nrow(stations)
@@ -149,9 +201,31 @@ getGoogleInfo<- function(origin, destination, df){
   return(res)
 }
 
+
+#-------------Predict number of a usergroup at a given station in a timerange--------
+#first need to create an array with time-intervals, 24hours, factorize
+#then create new variable, and graph by that variable
+
+#could also be intersting to look into when people rent bicycles (after whole hours)
+
+#---------By agegroups-------
+trips$Agecat1<-cut(trips$age, c(19,25,35,45,55,63,81), right = FALSE)
+
+
+#---------Mapping--------
+#-----First need to fix
+
+#install_version("ggplot2", version = "2.1.0", repos = "http://cran.us.r-project.org")
+seattle<-get_map("seattle", color = "color",
+      source = "google",maptype = "roadmap",zoom = 12)
+map<-ggmap(seattle,extent = "normal") + geom_curve(data = tripcombs, aes(x = from_long,y = from_lat, xend = to_long, yend = to_lat), angle = 45, color = "blue") + coord_cartesian()
+
+
+###change
 #Add time and distance columns to dataset
 trips[,"timeEst"] <- apply(trips[,c("from_station_id", "to_station_id")], 1, function(x) getGoogleInfo(x[1],x[2], time.matrix))
 trips[,"distanceEst"] <- apply(trips[,c("from_station_id", "to_station_id")], 1, function(x) getGoogleInfo(x[1],x[2], distance.matrix))
+
 
 
 ```
