@@ -80,11 +80,11 @@ trips<-merge(trips,weather, by.y = "onlyDate", by.x = "onlyDate")
 #-------------merge stationcoordinates into trips---------
 #syntax table1$val2 <- table2$val2[match(table1$pid, table2$pid)]
 
-#trips$from_long<-stations$long[match(trips$from_station_id,stations$station_id)]
-#trips$from_lat<-stations$lat[match(trips$from_station_id,stations$station_id)]
+trips$from_long<-stations$long[match(trips$from_station_id,stations$station_id)]
+trips$from_lat<-stations$lat[match(trips$from_station_id,stations$station_id)]
 
-#trips$to_long<-stations$long[match(trips$to_station_id,stations$station_id)]
-#trips$to_lat<-stations$lat[match(trips$to_station_id,stations$station_id)]
+trips$to_long<-stations$long[match(trips$to_station_id,stations$station_id)]
+trips$to_lat<-stations$lat[match(trips$to_station_id,stations$station_id)]
 
 #--------generate new array to store all combinations of trips with coordinates
 #first create matrix with all possible combinations, then add coordinates to this
@@ -147,7 +147,7 @@ trips[,"distanceEst"] <- apply(trips[,c("from_station_id", "to_station_id")], 1,
 trips[,"timeDiff"] <- trips$tripduration-trips$timeEst
 
 write.csv(trips, "data/trips_processed.csv")
-write.csv(weather, "data/weather_processed.csv")
+write.csv(weather, "data/weather_processed2.csv")
 
 
 
