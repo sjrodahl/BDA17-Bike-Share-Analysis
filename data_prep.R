@@ -8,6 +8,8 @@ library(lubridate)
 library(ggmap) #remember to cite ggmap
 library(timeDate)
 library(chron)
+library(plyr)
+
 
 #Comment out the other user.
 setwd("/Users/tormagnusmichaelsen/Documents/BDA/Project/BDA17-Bike-Share-Analysis")
@@ -32,6 +34,12 @@ trips$endDate<- as.character(trips$stoptime) #to characters
 trips$startDate <- as.POSIXct(trips$startDate,format="%m/%d/%Y %H:%M") #to dates
 trips$endDate <- as.POSIXct(trips$endDate,format="%m/%d/%Y %H:%M") #to dates
 #now format = Y-m-d H:M:S
+
+#------------add onlySTime-------
+trips$onlySTime<-strftime(trips$startDate, format="%H:%M:%S")
+trips$onlySTime<-as.POSIXct((trips$startDate), format="%H:%M:%S")
+trips$onlySTime<-format(trips$onlySTime, "%H:%M:%S")
+
 
 #------------add day of week, from startDate
 trips$sDay<- wday(trips$startDate, label = TRUE)
@@ -64,7 +72,7 @@ trips$holiday<-is.holiday(trips$startDate)
 
 #-----------add onlyDate as factorized version of date, to use in comparison with weather data. Removes hour and minute mark
 
-trips$onlyDate<-as.Date(trips$startDate)
+trips$onlyDate<-as.Date(trips$startDate,tz = "PST8PDT")
 #trips$onlyDate<-factor(trips$onlyDate)
 
 
@@ -74,17 +82,17 @@ trips$age<-2017 - trips$birthyear
 
 #--------------merge weatherdata into trips-------
 weather$Date<-factor(weather$Date)
-weather$onlyDate <- as.Date(as.POSIXct(weather$Date,format="%m/%d/%Y")) #to dates
+weather$onlyDate <- as.Date(as.POSIXct(weather$Date,format="%m/%d/%Y",tz = "PST8PDT")) #to dates
 trips<-merge(trips,weather, by.y = "onlyDate", by.x = "onlyDate")
 
 #-------------merge stationcoordinates into trips---------
 #syntax table1$val2 <- table2$val2[match(table1$pid, table2$pid)]
 
-trips$from_long<-stations$long[match(trips$from_station_id,stations$station_id)]
-trips$from_lat<-stations$lat[match(trips$from_station_id,stations$station_id)]
+trips$from_long<-as.factor(stations$long[match(trips$from_station_id,stations$station_id)])
+trips$from_lat<-as.factor(stations$lat[match(trips$from_station_id,stations$station_id)])
 
-trips$to_long<-stations$long[match(trips$to_station_id,stations$station_id)]
-trips$to_lat<-stations$lat[match(trips$to_station_id,stations$station_id)]
+trips$to_long<-as.factor(stations$long[match(trips$to_station_id,stations$station_id)])
+trips$to_lat<-as.factor(stations$lat[match(trips$to_station_id,stations$station_id)])
 
 #--------generate new array to store all combinations of trips with coordinates
 #first create matrix with all possible combinations, then add coordinates to this
@@ -145,6 +153,21 @@ trips[,"timeEst"] <- apply(trips[,c("from_station_id", "to_station_id")], 1, fun
 trips[,"distanceEst"] <- apply(trips[,c("from_station_id", "to_station_id")], 1, function(x) getGoogleInfo(x[1],x[2], distance.matrix))
 
 trips[,"timeDiff"] <- trips$tripduration-trips$timeEst
+
+#dataprep for eda
+#need library(plyr) for this, conflicting with "lubridate"
+library(plyr)
+from_stations<-count(trips, c('from_long', 'from_lat'))
+
+to_stations<-count(trips, c('to_long', 'to_lat'))
+names(from_stations)[3]<-"departures"
+
+from_stations$from_long<-as.numeric(as.character(from_stations$from_long))
+from_stations$from_lat<-as.numeric(as.character(from_stations$from_lat))
+
+from_stations$departures<-as.numeric(from_stations$departures)
+#end dataprep for eda
+
 
 write.csv(trips, "data/trips_processed.csv")
 write.csv(weather, "data/weather_processed2.csv")

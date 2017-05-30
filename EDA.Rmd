@@ -7,9 +7,25 @@ output: html_document
 knitr::opts_chunk$set(echo = TRUE)
 ```
 
+
+
+
 ## R Markdown
 ```{r}
+#install gpclib
+#install openStreetMap?
+#install readr
+#install scales
+library(maptools)
+library(RColorBrewer)
+library(classInt)
+library(maps)
+library(OpenStreetMap)
 #----------general distribution plots------
+setwd("/Users/tormagnusmichaelsen/Documents/BDA/Project/BDA17-Bike-Share-Analysis")
+
+trips<-read.csv("data/trips_processed.csv")
+weather<-read.csv("data/weather_processed2.csv")
 
 #agedistribution over trips
  p1 <- ggplot(data = trips, aes(x = age)) + geom_histogram(binwidth = 1, color='black',fill='orange') + scale_x_continuous(breaks = seq(15,81,5))
@@ -102,23 +118,106 @@ getGoogleInfo<- function(origin, destination, df){
 #-----First need to fix
 
 #install_version("ggplot2", version = "2.1.0", repos = "http://cran.us.r-project.org")
-seattle<-get_map(location = c(-122.36,47.58,-122.26,47.69), color = "color",
-      source = "google", maptype = "roadmap")
-      
-map1<-ggmap(seattle,extent = "normal") + geom_curve(data = tripcombs, aes(x = from_long,y = from_lat, xend = to_long, yend = to_lat), angle = 45, color = "blue") + coord_cartesian()
 
-from_stations<-ggmap(seattle,extent = "normal") + geom_point(data = trips, aes(x = from_long,y = from_lat), color = "blue") + coord_cartesian()
+#seattle_coordmap<-get_map(location =  c(-122.38, 47.58,-122.25,47.68),source = "google", maptype = "satellite")
+# doesn't return the right coordinates
+#trying another method:
+
+lat<-c(47.58, 47.68)
+lon<-c(-122.25, -122.38)
+seattle_impr<-get_map(location = c(lon = mean(lon), lat = mean(lat)), zoom = 13, maptype = "satellite", source = "google")
+
+
+#seattle_zoom<-get_map(location = "seattle", zoom = 12, source = "google", maptype = "hybrid")
+#too far out, and zoom 13 gir: Removed 12 rows containing missing values (geom_point). 
 
 
 
+#map_curvedLines<-ggmap(seattle_coordmap,extent = "normal") + geom_curve(data = sub1, #aes(x = from_long,y = from_lat, xend = to_long, yend = to_lat), angle = 45, color = #"blue") + coord_cartesian()
+
+map_fromPoints<-ggmap(seattle_impr) + 
+  geom_point(data = from_stations, 
+             aes(x = from_long,y = from_lat, size = departures), 
+             color = "orange")
+
+
+#read that with osm one won't have access to satellite images so this is dropped
+#seattle_osm<- openmap(c(47.68,-122.38), c(47.58,-122.25),type = "skobbler")
+#mapbox, osm, opencyclemap, 
+#plot(seattle_osm)
+
+
+
+#from_stations_wo_count<-unique(trips[c("from_lat", "from_long")]) #doesn't give count
+
+
+
+#formatting a version of trips to work with plyr
+trips_df<-tbl_df(trips)
+
+
+#lineplot over trips by day and time
+hourly <- group_by(trips_df, sHour, sDay)
+daily <- group_by(trips_df,sDay,sHour)
+
+per_hour<- dplyr::summarize(hourly, departures = n())
+per_day<-dplyr::summarize(daily,departures = n())
+
+#fixed bug x-ticks not showing by factorizing sHour
+hourlyPlot<-ggplot(hourly, aes(x = as.factor(sHour), y = departures , colour = sDay)) +
+     geom_point(data = per_hour, aes(group = sDay)) +
+     geom_line(data = per_hour, aes(group = sDay)) +
+     scale_x_discrete() +
+     scale_y_continuous(breaks = seq(0,900,100))+
+     xlab('Hour')+
+     ylab('rentals')+
+     theme_minimal()
+   
+
+#pick-up times by agegroups
+ByAgeGroup<- group_by(trips_df, sHour, Agecat1)
+
+SumByAgeGroup <- dplyr::summarize(ByAgeGroup,rentals = n())
+#bug fixed: grouping by agecat1 and then sHour doesn't produce correct plot
+hourlyByAge<-ggplot(ByAgeGroup, aes(x=as.factor(sHour), y = rentals, colour = Agecat1, group = Agecat1))+
+     geom_point(data = SumByAgeGroup, aes(group = Agecat1)) +
+     geom_line(data = SumByAgeGroup, aes(group = Agecat1)) +
+     scale_x_discrete() +
+     #scale_y_continuous(breaks = seq(0,900,100))+
+     xlab('Hour')+
+     ylab('rentals')
+     #theme_minimal()
+
+#plot over pickup times for member
+ByUserType <- group_by(trips_df,sHour, usertype) #%>% filter(!is.na(usertype))
+SumByUserType<-dplyr::summarize(ByUserType,rentals = n())
+
+UserTypePlot<-ggplot(ByUserType, aes(x = as.factor(sHour), y = rentals, colour = usertype))+
+  geom_line(data = SumByUserType, aes(group = usertype))+
+  geom_point(data = SumByUserType, aes(group = usertype)) +
+  scale_x_discrete()+
+  scale_y_continuous(breaks = seq(0,4000,200))+
+  xlab('Hour')+
+  ylab('rentals')+
+  theme_minimal() 
+
+#plot over timediff vs usertypes and times
+TimeVsAge <- group_by(trips_df,sHour,Agecat1,timeDiff) #%>% filter(!is.na(usertype))
+SumByTimeAge<-dplyr::summarize(TimeVsAge,median = median(timeDiff))
+
+UserTypePlot<-ggplot(ByUserType, aes(x = as.factor(sHour), y = rentals, colour = usertype))+
+  geom_line(data = SumByUserType, aes(group = usertype))+
+  geom_point(data = SumByUserType, aes(group = usertype)) +
+  scale_x_discrete()+
+  scale_y_continuous(breaks = seq(0,4000,200))+
+  xlab('Hour')+
+  ylab('rentals')+
+  theme_minimal() 
+#plot over timediff vs agegroups
+#plot over timediff vs weather
+#
+  
 
 ```
 
-
-
-
-
-
-
-```
 
