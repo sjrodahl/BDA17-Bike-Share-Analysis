@@ -34,3 +34,18 @@ x = as.data.frame(tripsTrainNoNa[,-2]) #removing tripduration
 model1 <- cv.glmnet(model.matrix(~.,x),target,alpha=1, nlambda =50)
 plot(model1)
 coef(model1, s = model1.01$lambda.min)
+
+##############################################
+##### Model 2: Predicting time difference. ###
+##############################################
+
+tripsTrainTimeDiff <- tripsTrain[, c("onlyDate", "from_station_id", "to_station_id", "usertype", "gender", "birthyear", "sDay", "eDay", "weekday", "holiday", "age", "Max_Temperature_F", "Mean_Temperature_F", "Min_TemperatureF", "Max_Dew_Point_F", "MeanDew_Point_F", "Min_Dewpoint_F", "Max_Humidity", "Mean_Humidity", "Min_Humidity", "Max_Sea_Level_Pressure_In", "Mean_Sea_Level_Pressure_In", "Min_Sea_Level_Pressure_In", "Max_Visibility_Miles", "Mean_Visibility_Miles", "Min_Visibility_Miles", "Max_Wind_Speed_MPH", "Mean_Wind_Speed_MPH", "Max_Gust_Speed_MPH", "Precipitation_In", "Events", "Agecat1", "distanceEst", "timeDiff")]
+tripsTrainTimeDiffNoNa <- na.omit(tripsTrainTimeDiff)
+targetTimeDiff <- tripsTrainTimeDiffNoNa$timeDiff
+xTimeDiff <- as.data.frame(tripsTrainTimeDiffNoNa[,-34]) #removin timeDiff
+
+modelTimeDiff <- cv.glmnet(model.matrix(~.,xTimeDiff), targetTimeDiff, alpha = 1, nlambda =50)
+plot(modelTimeDiff)
+coef(modelTimeDiff, s = modelTimeDiff$lambda.min)
+
+#The result is terrible...
