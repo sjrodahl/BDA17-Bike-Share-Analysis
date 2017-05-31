@@ -1,0 +1,1358 @@
+<?xml version='1.0' encoding='utf-8' ?>
+
+<!-- build 10200.17.0505.1445                               -->
+<workbook source-build='10.2.2 (10200.17.0505.1445)' source-platform='win' version='10.2' xmlns:user='http://www.tableausoftware.com/xml/user'>
+  <preferences>
+    <preference name='ui.encoding.shelf.height' value='24' />
+    <preference name='ui.shelf.height' value='26' />
+  </preferences>
+  <datasources>
+    <datasource caption='trips_processed (trips_processed2)' inline='true' name='federated.1buzi3c0w38a8b13w5q4k0htrbz2' version='10.2'>
+      <connection class='federated'>
+        <named-connections>
+          <named-connection caption='trips_processed2' name='excel-direct.1slo8mn1c5y8gx15uot9g0urs253'>
+            <connection class='excel-direct' cleaning='no' compat='no' dataRefreshTime='' filename='D:/Sondre/Dokumenter/UCSD/IRGN452 BigDataAnalytics/Project/BDA17-Bike-Share-Analysis/data/trips_processed2.xlsx' interpretationMode='0' password='' server='' validate='no' />
+          </named-connection>
+        </named-connections>
+        <relation connection='excel-direct.1slo8mn1c5y8gx15uot9g0urs253' name='trips_processed' table='[trips_processed$]' type='table'>
+          <columns gridOrigin='A1:BD10001:no:A1:BD2147483647:0' header='yes' outcome='2'>
+            <column datatype='integer' name='ID' ordinal='0' />
+            <column datatype='date' name='onlyDate' ordinal='1' />
+            <column datatype='integer' name='trip_id' ordinal='2' />
+            <column datatype='string' name='starttime' ordinal='3' />
+            <column datatype='string' name='stoptime' ordinal='4' />
+            <column datatype='string' name='bikeid' ordinal='5' />
+            <column datatype='string' name='tripduration' ordinal='6' />
+            <column datatype='string' name='from_station_name' ordinal='7' />
+            <column datatype='string' name='to_station_name' ordinal='8' />
+            <column datatype='string' name='from_station_id' ordinal='9' />
+            <column datatype='string' name='to_station_id' ordinal='10' />
+            <column datatype='string' name='usertype' ordinal='11' />
+            <column datatype='string' name='gender' ordinal='12' />
+            <column datatype='string' name='birthyear' ordinal='13' />
+            <column datatype='datetime' name='startDate' ordinal='14' />
+            <column datatype='datetime' name='endDate' ordinal='15' />
+            <column datatype='string' name='sDay' ordinal='16' />
+            <column datatype='string' name='eDay' ordinal='17' />
+            <column datatype='string' name='sMonth' ordinal='18' />
+            <column datatype='string' name='eMonth' ordinal='19' />
+            <column datatype='integer' name='sYear' ordinal='20' />
+            <column datatype='integer' name='eYear' ordinal='21' />
+            <column datatype='integer' name='sSeconds' ordinal='22' />
+            <column datatype='integer' name='eSeconds' ordinal='23' />
+            <column datatype='integer' name='sHour' ordinal='24' />
+            <column datatype='integer' name='eHour' ordinal='25' />
+            <column datatype='integer' name='sMinute' ordinal='26' />
+            <column datatype='integer' name='eMinute' ordinal='27' />
+            <column datatype='string' name='weekday' ordinal='28' />
+            <column datatype='string' name='holiday' ordinal='29' />
+            <column datatype='string' name='age' ordinal='30' />
+            <column datatype='string' name='Date' ordinal='31' />
+            <column datatype='integer' name='Max_Temperature_F' ordinal='32' />
+            <column datatype='integer' name='Mean_Temperature_F' ordinal='33' />
+            <column datatype='integer' name='Min_TemperatureF' ordinal='34' />
+            <column datatype='integer' name='Max_Dew_Point_F' ordinal='35' />
+            <column datatype='integer' name='MeanDew_Point_F' ordinal='36' />
+            <column datatype='integer' name='Min_Dewpoint_F' ordinal='37' />
+            <column datatype='integer' name='Max_Humidity' ordinal='38' />
+            <column datatype='integer' name='Mean_Humidity' ordinal='39' />
+            <column datatype='integer' name='Min_Humidity' ordinal='40' />
+            <column datatype='string' name='Max_Sea_Level_Pressure_In' ordinal='41' />
+            <column datatype='string' name='Mean_Sea_Level_Pressure_In' ordinal='42' />
+            <column datatype='string' name='Min_Sea_Level_Pressure_In' ordinal='43' />
+            <column datatype='integer' name='Max_Visibility_Miles' ordinal='44' />
+            <column datatype='integer' name='Mean_Visibility_Miles' ordinal='45' />
+            <column datatype='integer' name='Min_Visibility_Miles' ordinal='46' />
+            <column datatype='integer' name='Max_Wind_Speed_MPH' ordinal='47' />
+            <column datatype='integer' name='Mean_Wind_Speed_MPH' ordinal='48' />
+            <column datatype='string' name='Max_Gust_Speed_MPH' ordinal='49' />
+            <column datatype='string' name='Precipitation_In' ordinal='50' />
+            <column datatype='string' name='Events' ordinal='51' />
+            <column datatype='string' name='Agecat1' ordinal='52' />
+            <column datatype='integer' name='timeEst' ordinal='53' />
+            <column datatype='integer' name='distanceEst' ordinal='54' />
+            <column datatype='real' name='timeDiff' ordinal='55' />
+          </columns>
+        </relation>
+        <metadata-records>
+          <metadata-record class='column'>
+            <remote-name>ID</remote-name>
+            <remote-type>20</remote-type>
+            <local-name>[ID]</local-name>
+            <parent-name>[trips_processed]</parent-name>
+            <remote-alias>ID</remote-alias>
+            <ordinal>0</ordinal>
+            <local-type>integer</local-type>
+            <aggregation>Sum</aggregation>
+            <contains-null>true</contains-null>
+            <attributes>
+              <attribute datatype='string' name='DebugRemoteType'>&quot;I8&quot;</attribute>
+            </attributes>
+          </metadata-record>
+          <metadata-record class='column'>
+            <remote-name>onlyDate</remote-name>
+            <remote-type>7</remote-type>
+            <local-name>[onlyDate]</local-name>
+            <parent-name>[trips_processed]</parent-name>
+            <remote-alias>onlyDate</remote-alias>
+            <ordinal>1</ordinal>
+            <local-type>date</local-type>
+            <aggregation>Year</aggregation>
+            <contains-null>true</contains-null>
+            <attributes>
+              <attribute datatype='string' name='DebugRemoteType'>&quot;DATE&quot;</attribute>
+            </attributes>
+          </metadata-record>
+          <metadata-record class='column'>
+            <remote-name>trip_id</remote-name>
+            <remote-type>20</remote-type>
+            <local-name>[trip_id]</local-name>
+            <parent-name>[trips_processed]</parent-name>
+            <remote-alias>trip_id</remote-alias>
+            <ordinal>2</ordinal>
+            <local-type>integer</local-type>
+            <aggregation>Sum</aggregation>
+            <contains-null>true</contains-null>
+            <attributes>
+              <attribute datatype='string' name='DebugRemoteType'>&quot;I8&quot;</attribute>
+            </attributes>
+          </metadata-record>
+          <metadata-record class='column'>
+            <remote-name>starttime</remote-name>
+            <remote-type>130</remote-type>
+            <local-name>[starttime]</local-name>
+            <parent-name>[trips_processed]</parent-name>
+            <remote-alias>starttime</remote-alias>
+            <ordinal>3</ordinal>
+            <local-type>string</local-type>
+            <aggregation>Count</aggregation>
+            <contains-null>true</contains-null>
+            <collation flag='1' name='LNB_RNO_S2' />
+            <attributes>
+              <attribute datatype='string' name='DebugRemoteType'>&quot;WSTR&quot;</attribute>
+            </attributes>
+          </metadata-record>
+          <metadata-record class='column'>
+            <remote-name>stoptime</remote-name>
+            <remote-type>130</remote-type>
+            <local-name>[stoptime]</local-name>
+            <parent-name>[trips_processed]</parent-name>
+            <remote-alias>stoptime</remote-alias>
+            <ordinal>4</ordinal>
+            <local-type>string</local-type>
+            <aggregation>Count</aggregation>
+            <contains-null>true</contains-null>
+            <collation flag='1' name='LNB_RNO_S2' />
+            <attributes>
+              <attribute datatype='string' name='DebugRemoteType'>&quot;WSTR&quot;</attribute>
+            </attributes>
+          </metadata-record>
+          <metadata-record class='column'>
+            <remote-name>bikeid</remote-name>
+            <remote-type>130</remote-type>
+            <local-name>[bikeid]</local-name>
+            <parent-name>[trips_processed]</parent-name>
+            <remote-alias>bikeid</remote-alias>
+            <ordinal>5</ordinal>
+            <local-type>string</local-type>
+            <aggregation>Count</aggregation>
+            <contains-null>true</contains-null>
+            <collation flag='1' name='LNB_RNO_S2' />
+            <attributes>
+              <attribute datatype='string' name='DebugRemoteType'>&quot;WSTR&quot;</attribute>
+            </attributes>
+          </metadata-record>
+          <metadata-record class='column'>
+            <remote-name>tripduration</remote-name>
+            <remote-type>130</remote-type>
+            <local-name>[tripduration]</local-name>
+            <parent-name>[trips_processed]</parent-name>
+            <remote-alias>tripduration</remote-alias>
+            <ordinal>6</ordinal>
+            <local-type>string</local-type>
+            <aggregation>Count</aggregation>
+            <contains-null>true</contains-null>
+            <collation flag='1' name='LNB_RNO_S2' />
+            <attributes>
+              <attribute datatype='string' name='DebugRemoteType'>&quot;WSTR&quot;</attribute>
+            </attributes>
+          </metadata-record>
+          <metadata-record class='column'>
+            <remote-name>from_station_name</remote-name>
+            <remote-type>130</remote-type>
+            <local-name>[from_station_name]</local-name>
+            <parent-name>[trips_processed]</parent-name>
+            <remote-alias>from_station_name</remote-alias>
+            <ordinal>7</ordinal>
+            <local-type>string</local-type>
+            <aggregation>Count</aggregation>
+            <contains-null>true</contains-null>
+            <collation flag='1' name='LNB_RNO_S2' />
+            <attributes>
+              <attribute datatype='string' name='DebugRemoteType'>&quot;WSTR&quot;</attribute>
+            </attributes>
+          </metadata-record>
+          <metadata-record class='column'>
+            <remote-name>to_station_name</remote-name>
+            <remote-type>130</remote-type>
+            <local-name>[to_station_name]</local-name>
+            <parent-name>[trips_processed]</parent-name>
+            <remote-alias>to_station_name</remote-alias>
+            <ordinal>8</ordinal>
+            <local-type>string</local-type>
+            <aggregation>Count</aggregation>
+            <contains-null>true</contains-null>
+            <collation flag='1' name='LNB_RNO_S2' />
+            <attributes>
+              <attribute datatype='string' name='DebugRemoteType'>&quot;WSTR&quot;</attribute>
+            </attributes>
+          </metadata-record>
+          <metadata-record class='column'>
+            <remote-name>from_station_id</remote-name>
+            <remote-type>130</remote-type>
+            <local-name>[from_station_id]</local-name>
+            <parent-name>[trips_processed]</parent-name>
+            <remote-alias>from_station_id</remote-alias>
+            <ordinal>9</ordinal>
+            <local-type>string</local-type>
+            <aggregation>Count</aggregation>
+            <contains-null>true</contains-null>
+            <collation flag='1' name='LNB_RNO_S2' />
+            <attributes>
+              <attribute datatype='string' name='DebugRemoteType'>&quot;WSTR&quot;</attribute>
+            </attributes>
+          </metadata-record>
+          <metadata-record class='column'>
+            <remote-name>to_station_id</remote-name>
+            <remote-type>130</remote-type>
+            <local-name>[to_station_id]</local-name>
+            <parent-name>[trips_processed]</parent-name>
+            <remote-alias>to_station_id</remote-alias>
+            <ordinal>10</ordinal>
+            <local-type>string</local-type>
+            <aggregation>Count</aggregation>
+            <contains-null>true</contains-null>
+            <collation flag='1' name='LNB_RNO_S2' />
+            <attributes>
+              <attribute datatype='string' name='DebugRemoteType'>&quot;WSTR&quot;</attribute>
+            </attributes>
+          </metadata-record>
+          <metadata-record class='column'>
+            <remote-name>usertype</remote-name>
+            <remote-type>130</remote-type>
+            <local-name>[usertype]</local-name>
+            <parent-name>[trips_processed]</parent-name>
+            <remote-alias>usertype</remote-alias>
+            <ordinal>11</ordinal>
+            <local-type>string</local-type>
+            <aggregation>Count</aggregation>
+            <contains-null>true</contains-null>
+            <collation flag='1' name='LNB_RNO_S2' />
+            <attributes>
+              <attribute datatype='string' name='DebugRemoteType'>&quot;WSTR&quot;</attribute>
+            </attributes>
+          </metadata-record>
+          <metadata-record class='column'>
+            <remote-name>gender</remote-name>
+            <remote-type>130</remote-type>
+            <local-name>[gender]</local-name>
+            <parent-name>[trips_processed]</parent-name>
+            <remote-alias>gender</remote-alias>
+            <ordinal>12</ordinal>
+            <local-type>string</local-type>
+            <aggregation>Count</aggregation>
+            <contains-null>true</contains-null>
+            <collation flag='1' name='LNB_RNO_S2' />
+            <attributes>
+              <attribute datatype='string' name='DebugRemoteType'>&quot;WSTR&quot;</attribute>
+            </attributes>
+          </metadata-record>
+          <metadata-record class='column'>
+            <remote-name>birthyear</remote-name>
+            <remote-type>130</remote-type>
+            <local-name>[birthyear]</local-name>
+            <parent-name>[trips_processed]</parent-name>
+            <remote-alias>birthyear</remote-alias>
+            <ordinal>13</ordinal>
+            <local-type>string</local-type>
+            <aggregation>Count</aggregation>
+            <contains-null>true</contains-null>
+            <collation flag='1' name='LNB_RNO_S2' />
+            <attributes>
+              <attribute datatype='string' name='DebugRemoteType'>&quot;WSTR&quot;</attribute>
+            </attributes>
+          </metadata-record>
+          <metadata-record class='column'>
+            <remote-name>startDate</remote-name>
+            <remote-type>7</remote-type>
+            <local-name>[startDate]</local-name>
+            <parent-name>[trips_processed]</parent-name>
+            <remote-alias>startDate</remote-alias>
+            <ordinal>14</ordinal>
+            <local-type>datetime</local-type>
+            <aggregation>Year</aggregation>
+            <contains-null>true</contains-null>
+            <attributes>
+              <attribute datatype='string' name='DebugRemoteType'>&quot;DATE&quot;</attribute>
+            </attributes>
+          </metadata-record>
+          <metadata-record class='column'>
+            <remote-name>endDate</remote-name>
+            <remote-type>7</remote-type>
+            <local-name>[endDate]</local-name>
+            <parent-name>[trips_processed]</parent-name>
+            <remote-alias>endDate</remote-alias>
+            <ordinal>15</ordinal>
+            <local-type>datetime</local-type>
+            <aggregation>Year</aggregation>
+            <contains-null>true</contains-null>
+            <attributes>
+              <attribute datatype='string' name='DebugRemoteType'>&quot;DATE&quot;</attribute>
+            </attributes>
+          </metadata-record>
+          <metadata-record class='column'>
+            <remote-name>sDay</remote-name>
+            <remote-type>130</remote-type>
+            <local-name>[sDay]</local-name>
+            <parent-name>[trips_processed]</parent-name>
+            <remote-alias>sDay</remote-alias>
+            <ordinal>16</ordinal>
+            <local-type>string</local-type>
+            <aggregation>Count</aggregation>
+            <contains-null>true</contains-null>
+            <collation flag='1' name='LNB_RNO_S2' />
+            <attributes>
+              <attribute datatype='string' name='DebugRemoteType'>&quot;WSTR&quot;</attribute>
+            </attributes>
+          </metadata-record>
+          <metadata-record class='column'>
+            <remote-name>eDay</remote-name>
+            <remote-type>130</remote-type>
+            <local-name>[eDay]</local-name>
+            <parent-name>[trips_processed]</parent-name>
+            <remote-alias>eDay</remote-alias>
+            <ordinal>17</ordinal>
+            <local-type>string</local-type>
+            <aggregation>Count</aggregation>
+            <contains-null>true</contains-null>
+            <collation flag='1' name='LNB_RNO_S2' />
+            <attributes>
+              <attribute datatype='string' name='DebugRemoteType'>&quot;WSTR&quot;</attribute>
+            </attributes>
+          </metadata-record>
+          <metadata-record class='column'>
+            <remote-name>sMonth</remote-name>
+            <remote-type>130</remote-type>
+            <local-name>[sMonth]</local-name>
+            <parent-name>[trips_processed]</parent-name>
+            <remote-alias>sMonth</remote-alias>
+            <ordinal>18</ordinal>
+            <local-type>string</local-type>
+            <aggregation>Count</aggregation>
+            <contains-null>true</contains-null>
+            <collation flag='1' name='LNB_RNO_S2' />
+            <attributes>
+              <attribute datatype='string' name='DebugRemoteType'>&quot;WSTR&quot;</attribute>
+            </attributes>
+          </metadata-record>
+          <metadata-record class='column'>
+            <remote-name>eMonth</remote-name>
+            <remote-type>130</remote-type>
+            <local-name>[eMonth]</local-name>
+            <parent-name>[trips_processed]</parent-name>
+            <remote-alias>eMonth</remote-alias>
+            <ordinal>19</ordinal>
+            <local-type>string</local-type>
+            <aggregation>Count</aggregation>
+            <contains-null>true</contains-null>
+            <collation flag='1' name='LNB_RNO_S2' />
+            <attributes>
+              <attribute datatype='string' name='DebugRemoteType'>&quot;WSTR&quot;</attribute>
+            </attributes>
+          </metadata-record>
+          <metadata-record class='column'>
+            <remote-name>sYear</remote-name>
+            <remote-type>20</remote-type>
+            <local-name>[sYear]</local-name>
+            <parent-name>[trips_processed]</parent-name>
+            <remote-alias>sYear</remote-alias>
+            <ordinal>20</ordinal>
+            <local-type>integer</local-type>
+            <aggregation>Sum</aggregation>
+            <contains-null>true</contains-null>
+            <attributes>
+              <attribute datatype='string' name='DebugRemoteType'>&quot;I8&quot;</attribute>
+            </attributes>
+          </metadata-record>
+          <metadata-record class='column'>
+            <remote-name>eYear</remote-name>
+            <remote-type>20</remote-type>
+            <local-name>[eYear]</local-name>
+            <parent-name>[trips_processed]</parent-name>
+            <remote-alias>eYear</remote-alias>
+            <ordinal>21</ordinal>
+            <local-type>integer</local-type>
+            <aggregation>Sum</aggregation>
+            <contains-null>true</contains-null>
+            <attributes>
+              <attribute datatype='string' name='DebugRemoteType'>&quot;I8&quot;</attribute>
+            </attributes>
+          </metadata-record>
+          <metadata-record class='column'>
+            <remote-name>sSeconds</remote-name>
+            <remote-type>20</remote-type>
+            <local-name>[sSeconds]</local-name>
+            <parent-name>[trips_processed]</parent-name>
+            <remote-alias>sSeconds</remote-alias>
+            <ordinal>22</ordinal>
+            <local-type>integer</local-type>
+            <aggregation>Sum</aggregation>
+            <contains-null>true</contains-null>
+            <attributes>
+              <attribute datatype='string' name='DebugRemoteType'>&quot;I8&quot;</attribute>
+            </attributes>
+          </metadata-record>
+          <metadata-record class='column'>
+            <remote-name>eSeconds</remote-name>
+            <remote-type>20</remote-type>
+            <local-name>[eSeconds]</local-name>
+            <parent-name>[trips_processed]</parent-name>
+            <remote-alias>eSeconds</remote-alias>
+            <ordinal>23</ordinal>
+            <local-type>integer</local-type>
+            <aggregation>Sum</aggregation>
+            <contains-null>true</contains-null>
+            <attributes>
+              <attribute datatype='string' name='DebugRemoteType'>&quot;I8&quot;</attribute>
+            </attributes>
+          </metadata-record>
+          <metadata-record class='column'>
+            <remote-name>sHour</remote-name>
+            <remote-type>20</remote-type>
+            <local-name>[sHour]</local-name>
+            <parent-name>[trips_processed]</parent-name>
+            <remote-alias>sHour</remote-alias>
+            <ordinal>24</ordinal>
+            <local-type>integer</local-type>
+            <aggregation>Sum</aggregation>
+            <contains-null>true</contains-null>
+            <attributes>
+              <attribute datatype='string' name='DebugRemoteType'>&quot;I8&quot;</attribute>
+            </attributes>
+          </metadata-record>
+          <metadata-record class='column'>
+            <remote-name>eHour</remote-name>
+            <remote-type>20</remote-type>
+            <local-name>[eHour]</local-name>
+            <parent-name>[trips_processed]</parent-name>
+            <remote-alias>eHour</remote-alias>
+            <ordinal>25</ordinal>
+            <local-type>integer</local-type>
+            <aggregation>Sum</aggregation>
+            <contains-null>true</contains-null>
+            <attributes>
+              <attribute datatype='string' name='DebugRemoteType'>&quot;I8&quot;</attribute>
+            </attributes>
+          </metadata-record>
+          <metadata-record class='column'>
+            <remote-name>sMinute</remote-name>
+            <remote-type>20</remote-type>
+            <local-name>[sMinute]</local-name>
+            <parent-name>[trips_processed]</parent-name>
+            <remote-alias>sMinute</remote-alias>
+            <ordinal>26</ordinal>
+            <local-type>integer</local-type>
+            <aggregation>Sum</aggregation>
+            <contains-null>true</contains-null>
+            <attributes>
+              <attribute datatype='string' name='DebugRemoteType'>&quot;I8&quot;</attribute>
+            </attributes>
+          </metadata-record>
+          <metadata-record class='column'>
+            <remote-name>eMinute</remote-name>
+            <remote-type>20</remote-type>
+            <local-name>[eMinute]</local-name>
+            <parent-name>[trips_processed]</parent-name>
+            <remote-alias>eMinute</remote-alias>
+            <ordinal>27</ordinal>
+            <local-type>integer</local-type>
+            <aggregation>Sum</aggregation>
+            <contains-null>true</contains-null>
+            <attributes>
+              <attribute datatype='string' name='DebugRemoteType'>&quot;I8&quot;</attribute>
+            </attributes>
+          </metadata-record>
+          <metadata-record class='column'>
+            <remote-name>weekday</remote-name>
+            <remote-type>130</remote-type>
+            <local-name>[weekday]</local-name>
+            <parent-name>[trips_processed]</parent-name>
+            <remote-alias>weekday</remote-alias>
+            <ordinal>28</ordinal>
+            <local-type>string</local-type>
+            <aggregation>Count</aggregation>
+            <contains-null>true</contains-null>
+            <collation flag='1' name='LNB_RNO_S2' />
+            <attributes>
+              <attribute datatype='string' name='DebugRemoteType'>&quot;WSTR&quot;</attribute>
+            </attributes>
+          </metadata-record>
+          <metadata-record class='column'>
+            <remote-name>holiday</remote-name>
+            <remote-type>130</remote-type>
+            <local-name>[holiday]</local-name>
+            <parent-name>[trips_processed]</parent-name>
+            <remote-alias>holiday</remote-alias>
+            <ordinal>29</ordinal>
+            <local-type>string</local-type>
+            <aggregation>Count</aggregation>
+            <contains-null>true</contains-null>
+            <collation flag='1' name='LNB_RNO_S2' />
+            <attributes>
+              <attribute datatype='string' name='DebugRemoteType'>&quot;WSTR&quot;</attribute>
+            </attributes>
+          </metadata-record>
+          <metadata-record class='column'>
+            <remote-name>age</remote-name>
+            <remote-type>130</remote-type>
+            <local-name>[age]</local-name>
+            <parent-name>[trips_processed]</parent-name>
+            <remote-alias>age</remote-alias>
+            <ordinal>30</ordinal>
+            <local-type>string</local-type>
+            <aggregation>Count</aggregation>
+            <contains-null>true</contains-null>
+            <collation flag='1' name='LNB_RNO_S2' />
+            <attributes>
+              <attribute datatype='string' name='DebugRemoteType'>&quot;WSTR&quot;</attribute>
+            </attributes>
+          </metadata-record>
+          <metadata-record class='column'>
+            <remote-name>Date</remote-name>
+            <remote-type>130</remote-type>
+            <local-name>[Date]</local-name>
+            <parent-name>[trips_processed]</parent-name>
+            <remote-alias>Date</remote-alias>
+            <ordinal>31</ordinal>
+            <local-type>string</local-type>
+            <aggregation>Count</aggregation>
+            <contains-null>true</contains-null>
+            <collation flag='1' name='LNB_RNO_S2' />
+            <attributes>
+              <attribute datatype='string' name='DebugRemoteType'>&quot;WSTR&quot;</attribute>
+            </attributes>
+          </metadata-record>
+          <metadata-record class='column'>
+            <remote-name>Max_Temperature_F</remote-name>
+            <remote-type>20</remote-type>
+            <local-name>[Max_Temperature_F]</local-name>
+            <parent-name>[trips_processed]</parent-name>
+            <remote-alias>Max_Temperature_F</remote-alias>
+            <ordinal>32</ordinal>
+            <local-type>integer</local-type>
+            <aggregation>Sum</aggregation>
+            <contains-null>true</contains-null>
+            <attributes>
+              <attribute datatype='string' name='DebugRemoteType'>&quot;I8&quot;</attribute>
+            </attributes>
+          </metadata-record>
+          <metadata-record class='column'>
+            <remote-name>Mean_Temperature_F</remote-name>
+            <remote-type>20</remote-type>
+            <local-name>[Mean_Temperature_F]</local-name>
+            <parent-name>[trips_processed]</parent-name>
+            <remote-alias>Mean_Temperature_F</remote-alias>
+            <ordinal>33</ordinal>
+            <local-type>integer</local-type>
+            <aggregation>Sum</aggregation>
+            <contains-null>true</contains-null>
+            <attributes>
+              <attribute datatype='string' name='DebugRemoteType'>&quot;I8&quot;</attribute>
+            </attributes>
+          </metadata-record>
+          <metadata-record class='column'>
+            <remote-name>Min_TemperatureF</remote-name>
+            <remote-type>20</remote-type>
+            <local-name>[Min_TemperatureF]</local-name>
+            <parent-name>[trips_processed]</parent-name>
+            <remote-alias>Min_TemperatureF</remote-alias>
+            <ordinal>34</ordinal>
+            <local-type>integer</local-type>
+            <aggregation>Sum</aggregation>
+            <contains-null>true</contains-null>
+            <attributes>
+              <attribute datatype='string' name='DebugRemoteType'>&quot;I8&quot;</attribute>
+            </attributes>
+          </metadata-record>
+          <metadata-record class='column'>
+            <remote-name>Max_Dew_Point_F</remote-name>
+            <remote-type>20</remote-type>
+            <local-name>[Max_Dew_Point_F]</local-name>
+            <parent-name>[trips_processed]</parent-name>
+            <remote-alias>Max_Dew_Point_F</remote-alias>
+            <ordinal>35</ordinal>
+            <local-type>integer</local-type>
+            <aggregation>Sum</aggregation>
+            <contains-null>true</contains-null>
+            <attributes>
+              <attribute datatype='string' name='DebugRemoteType'>&quot;I8&quot;</attribute>
+            </attributes>
+          </metadata-record>
+          <metadata-record class='column'>
+            <remote-name>MeanDew_Point_F</remote-name>
+            <remote-type>20</remote-type>
+            <local-name>[MeanDew_Point_F]</local-name>
+            <parent-name>[trips_processed]</parent-name>
+            <remote-alias>MeanDew_Point_F</remote-alias>
+            <ordinal>36</ordinal>
+            <local-type>integer</local-type>
+            <aggregation>Sum</aggregation>
+            <contains-null>true</contains-null>
+            <attributes>
+              <attribute datatype='string' name='DebugRemoteType'>&quot;I8&quot;</attribute>
+            </attributes>
+          </metadata-record>
+          <metadata-record class='column'>
+            <remote-name>Min_Dewpoint_F</remote-name>
+            <remote-type>20</remote-type>
+            <local-name>[Min_Dewpoint_F]</local-name>
+            <parent-name>[trips_processed]</parent-name>
+            <remote-alias>Min_Dewpoint_F</remote-alias>
+            <ordinal>37</ordinal>
+            <local-type>integer</local-type>
+            <aggregation>Sum</aggregation>
+            <contains-null>true</contains-null>
+            <attributes>
+              <attribute datatype='string' name='DebugRemoteType'>&quot;I8&quot;</attribute>
+            </attributes>
+          </metadata-record>
+          <metadata-record class='column'>
+            <remote-name>Max_Humidity</remote-name>
+            <remote-type>20</remote-type>
+            <local-name>[Max_Humidity]</local-name>
+            <parent-name>[trips_processed]</parent-name>
+            <remote-alias>Max_Humidity</remote-alias>
+            <ordinal>38</ordinal>
+            <local-type>integer</local-type>
+            <aggregation>Sum</aggregation>
+            <contains-null>true</contains-null>
+            <attributes>
+              <attribute datatype='string' name='DebugRemoteType'>&quot;I8&quot;</attribute>
+            </attributes>
+          </metadata-record>
+          <metadata-record class='column'>
+            <remote-name>Mean_Humidity</remote-name>
+            <remote-type>20</remote-type>
+            <local-name>[Mean_Humidity]</local-name>
+            <parent-name>[trips_processed]</parent-name>
+            <remote-alias>Mean_Humidity</remote-alias>
+            <ordinal>39</ordinal>
+            <local-type>integer</local-type>
+            <aggregation>Sum</aggregation>
+            <contains-null>true</contains-null>
+            <attributes>
+              <attribute datatype='string' name='DebugRemoteType'>&quot;I8&quot;</attribute>
+            </attributes>
+          </metadata-record>
+          <metadata-record class='column'>
+            <remote-name>Min_Humidity</remote-name>
+            <remote-type>20</remote-type>
+            <local-name>[Min_Humidity]</local-name>
+            <parent-name>[trips_processed]</parent-name>
+            <remote-alias>Min_Humidity</remote-alias>
+            <ordinal>40</ordinal>
+            <local-type>integer</local-type>
+            <aggregation>Sum</aggregation>
+            <contains-null>true</contains-null>
+            <attributes>
+              <attribute datatype='string' name='DebugRemoteType'>&quot;I8&quot;</attribute>
+            </attributes>
+          </metadata-record>
+          <metadata-record class='column'>
+            <remote-name>Max_Sea_Level_Pressure_In</remote-name>
+            <remote-type>130</remote-type>
+            <local-name>[Max_Sea_Level_Pressure_In]</local-name>
+            <parent-name>[trips_processed]</parent-name>
+            <remote-alias>Max_Sea_Level_Pressure_In</remote-alias>
+            <ordinal>41</ordinal>
+            <local-type>string</local-type>
+            <aggregation>Count</aggregation>
+            <contains-null>true</contains-null>
+            <collation flag='1' name='LNB_RNO_S2' />
+            <attributes>
+              <attribute datatype='string' name='DebugRemoteType'>&quot;WSTR&quot;</attribute>
+            </attributes>
+          </metadata-record>
+          <metadata-record class='column'>
+            <remote-name>Mean_Sea_Level_Pressure_In</remote-name>
+            <remote-type>130</remote-type>
+            <local-name>[Mean_Sea_Level_Pressure_In]</local-name>
+            <parent-name>[trips_processed]</parent-name>
+            <remote-alias>Mean_Sea_Level_Pressure_In</remote-alias>
+            <ordinal>42</ordinal>
+            <local-type>string</local-type>
+            <aggregation>Count</aggregation>
+            <contains-null>true</contains-null>
+            <collation flag='1' name='LNB_RNO_S2' />
+            <attributes>
+              <attribute datatype='string' name='DebugRemoteType'>&quot;WSTR&quot;</attribute>
+            </attributes>
+          </metadata-record>
+          <metadata-record class='column'>
+            <remote-name>Min_Sea_Level_Pressure_In</remote-name>
+            <remote-type>130</remote-type>
+            <local-name>[Min_Sea_Level_Pressure_In]</local-name>
+            <parent-name>[trips_processed]</parent-name>
+            <remote-alias>Min_Sea_Level_Pressure_In</remote-alias>
+            <ordinal>43</ordinal>
+            <local-type>string</local-type>
+            <aggregation>Count</aggregation>
+            <contains-null>true</contains-null>
+            <collation flag='1' name='LNB_RNO_S2' />
+            <attributes>
+              <attribute datatype='string' name='DebugRemoteType'>&quot;WSTR&quot;</attribute>
+            </attributes>
+          </metadata-record>
+          <metadata-record class='column'>
+            <remote-name>Max_Visibility_Miles</remote-name>
+            <remote-type>20</remote-type>
+            <local-name>[Max_Visibility_Miles]</local-name>
+            <parent-name>[trips_processed]</parent-name>
+            <remote-alias>Max_Visibility_Miles</remote-alias>
+            <ordinal>44</ordinal>
+            <local-type>integer</local-type>
+            <aggregation>Sum</aggregation>
+            <contains-null>true</contains-null>
+            <attributes>
+              <attribute datatype='string' name='DebugRemoteType'>&quot;I8&quot;</attribute>
+            </attributes>
+          </metadata-record>
+          <metadata-record class='column'>
+            <remote-name>Mean_Visibility_Miles</remote-name>
+            <remote-type>20</remote-type>
+            <local-name>[Mean_Visibility_Miles]</local-name>
+            <parent-name>[trips_processed]</parent-name>
+            <remote-alias>Mean_Visibility_Miles</remote-alias>
+            <ordinal>45</ordinal>
+            <local-type>integer</local-type>
+            <aggregation>Sum</aggregation>
+            <contains-null>true</contains-null>
+            <attributes>
+              <attribute datatype='string' name='DebugRemoteType'>&quot;I8&quot;</attribute>
+            </attributes>
+          </metadata-record>
+          <metadata-record class='column'>
+            <remote-name>Min_Visibility_Miles</remote-name>
+            <remote-type>20</remote-type>
+            <local-name>[Min_Visibility_Miles]</local-name>
+            <parent-name>[trips_processed]</parent-name>
+            <remote-alias>Min_Visibility_Miles</remote-alias>
+            <ordinal>46</ordinal>
+            <local-type>integer</local-type>
+            <aggregation>Sum</aggregation>
+            <contains-null>true</contains-null>
+            <attributes>
+              <attribute datatype='string' name='DebugRemoteType'>&quot;I8&quot;</attribute>
+            </attributes>
+          </metadata-record>
+          <metadata-record class='column'>
+            <remote-name>Max_Wind_Speed_MPH</remote-name>
+            <remote-type>20</remote-type>
+            <local-name>[Max_Wind_Speed_MPH]</local-name>
+            <parent-name>[trips_processed]</parent-name>
+            <remote-alias>Max_Wind_Speed_MPH</remote-alias>
+            <ordinal>47</ordinal>
+            <local-type>integer</local-type>
+            <aggregation>Sum</aggregation>
+            <contains-null>true</contains-null>
+            <attributes>
+              <attribute datatype='string' name='DebugRemoteType'>&quot;I8&quot;</attribute>
+            </attributes>
+          </metadata-record>
+          <metadata-record class='column'>
+            <remote-name>Mean_Wind_Speed_MPH</remote-name>
+            <remote-type>20</remote-type>
+            <local-name>[Mean_Wind_Speed_MPH]</local-name>
+            <parent-name>[trips_processed]</parent-name>
+            <remote-alias>Mean_Wind_Speed_MPH</remote-alias>
+            <ordinal>48</ordinal>
+            <local-type>integer</local-type>
+            <aggregation>Sum</aggregation>
+            <contains-null>true</contains-null>
+            <attributes>
+              <attribute datatype='string' name='DebugRemoteType'>&quot;I8&quot;</attribute>
+            </attributes>
+          </metadata-record>
+          <metadata-record class='column'>
+            <remote-name>Max_Gust_Speed_MPH</remote-name>
+            <remote-type>130</remote-type>
+            <local-name>[Max_Gust_Speed_MPH]</local-name>
+            <parent-name>[trips_processed]</parent-name>
+            <remote-alias>Max_Gust_Speed_MPH</remote-alias>
+            <ordinal>49</ordinal>
+            <local-type>string</local-type>
+            <aggregation>Count</aggregation>
+            <contains-null>true</contains-null>
+            <collation flag='1' name='LNB_RNO_S2' />
+            <attributes>
+              <attribute datatype='string' name='DebugRemoteType'>&quot;WSTR&quot;</attribute>
+            </attributes>
+          </metadata-record>
+          <metadata-record class='column'>
+            <remote-name>Precipitation_In</remote-name>
+            <remote-type>130</remote-type>
+            <local-name>[Precipitation_In]</local-name>
+            <parent-name>[trips_processed]</parent-name>
+            <remote-alias>Precipitation_In</remote-alias>
+            <ordinal>50</ordinal>
+            <local-type>string</local-type>
+            <aggregation>Count</aggregation>
+            <contains-null>true</contains-null>
+            <collation flag='1' name='LNB_RNO_S2' />
+            <attributes>
+              <attribute datatype='string' name='DebugRemoteType'>&quot;WSTR&quot;</attribute>
+            </attributes>
+          </metadata-record>
+          <metadata-record class='column'>
+            <remote-name>Events</remote-name>
+            <remote-type>130</remote-type>
+            <local-name>[Events]</local-name>
+            <parent-name>[trips_processed]</parent-name>
+            <remote-alias>Events</remote-alias>
+            <ordinal>51</ordinal>
+            <local-type>string</local-type>
+            <aggregation>Count</aggregation>
+            <contains-null>true</contains-null>
+            <collation flag='1' name='LNB_RNO_S2' />
+            <attributes>
+              <attribute datatype='string' name='DebugRemoteType'>&quot;WSTR&quot;</attribute>
+            </attributes>
+          </metadata-record>
+          <metadata-record class='column'>
+            <remote-name>Agecat1</remote-name>
+            <remote-type>130</remote-type>
+            <local-name>[Agecat1]</local-name>
+            <parent-name>[trips_processed]</parent-name>
+            <remote-alias>Agecat1</remote-alias>
+            <ordinal>52</ordinal>
+            <local-type>string</local-type>
+            <aggregation>Count</aggregation>
+            <contains-null>true</contains-null>
+            <collation flag='1' name='LNB_RNO_S2' />
+            <attributes>
+              <attribute datatype='string' name='DebugRemoteType'>&quot;WSTR&quot;</attribute>
+            </attributes>
+          </metadata-record>
+          <metadata-record class='column'>
+            <remote-name>timeEst</remote-name>
+            <remote-type>20</remote-type>
+            <local-name>[timeEst]</local-name>
+            <parent-name>[trips_processed]</parent-name>
+            <remote-alias>timeEst</remote-alias>
+            <ordinal>53</ordinal>
+            <local-type>integer</local-type>
+            <aggregation>Sum</aggregation>
+            <contains-null>true</contains-null>
+            <attributes>
+              <attribute datatype='string' name='DebugRemoteType'>&quot;I8&quot;</attribute>
+            </attributes>
+          </metadata-record>
+          <metadata-record class='column'>
+            <remote-name>distanceEst</remote-name>
+            <remote-type>20</remote-type>
+            <local-name>[distanceEst]</local-name>
+            <parent-name>[trips_processed]</parent-name>
+            <remote-alias>distanceEst</remote-alias>
+            <ordinal>54</ordinal>
+            <local-type>integer</local-type>
+            <aggregation>Sum</aggregation>
+            <contains-null>true</contains-null>
+            <attributes>
+              <attribute datatype='string' name='DebugRemoteType'>&quot;I8&quot;</attribute>
+            </attributes>
+          </metadata-record>
+          <metadata-record class='column'>
+            <remote-name>timeDiff</remote-name>
+            <remote-type>5</remote-type>
+            <local-name>[timeDiff]</local-name>
+            <parent-name>[trips_processed]</parent-name>
+            <remote-alias>timeDiff</remote-alias>
+            <ordinal>55</ordinal>
+            <local-type>real</local-type>
+            <aggregation>Sum</aggregation>
+            <precision>15</precision>
+            <contains-null>true</contains-null>
+            <attributes>
+              <attribute datatype='string' name='DebugRemoteType'>&quot;R8&quot;</attribute>
+            </attributes>
+          </metadata-record>
+          <metadata-record class='capability'>
+            <remote-name />
+            <remote-type>0</remote-type>
+            <parent-name>[trips_processed]</parent-name>
+            <remote-alias />
+            <aggregation>Count</aggregation>
+            <contains-null>true</contains-null>
+            <attributes>
+              <attribute datatype='integer' name='context'>1</attribute>
+              <attribute datatype='string' name='gridOrigin'>&quot;A1:BD10001:no:A1:BD2147483647:0&quot;</attribute>
+              <attribute datatype='boolean' name='header'>true</attribute>
+              <attribute datatype='integer' name='outcome'>2</attribute>
+            </attributes>
+          </metadata-record>
+        </metadata-records>
+      </connection>
+      <column datatype='integer' name='[ID]' role='dimension' type='ordinal' />
+      <column datatype='integer' name='[Number of Records]' role='measure' type='quantitative' user:auto-column='numrec'>
+        <calculation class='tableau' formula='1' />
+      </column>
+      <column datatype='integer' name='[eYear]' role='dimension' type='quantitative' />
+      <column datatype='integer' name='[sYear]' role='dimension' type='quantitative' />
+      <column datatype='integer' name='[trip_id]' role='dimension' type='ordinal' />
+      <layout dim-ordering='alphabetic' dim-percentage='0.556319' measure-ordering='alphabetic' measure-percentage='0.443681' rowDisplayCount='50000' show-structure='true' />
+      <semantic-values>
+        <semantic-value key='[Country].[Name]' value='&quot;Noruega&quot;' />
+      </semantic-values>
+      <date-options start-of-week='monday' />
+    </datasource>
+  </datasources>
+  <mapsources>
+    <mapsource name='Tableau' />
+  </mapsources>
+  <worksheets>
+    <worksheet name='Sheet 1'>
+      <table>
+        <view>
+          <datasources>
+            <datasource caption='trips_processed (trips_processed2)' name='federated.1buzi3c0w38a8b13w5q4k0htrbz2' />
+          </datasources>
+          <mapsources>
+            <mapsource name='Tableau' />
+          </mapsources>
+          <datasource-dependencies datasource='federated.1buzi3c0w38a8b13w5q4k0htrbz2'>
+            <column datatype='integer' name='[Number of Records]' role='measure' type='quantitative' user:auto-column='numrec'>
+              <calculation class='tableau' formula='1' />
+            </column>
+            <column-instance column='[timeDiff]' derivation='Avg' name='[avg:timeDiff:qk]' pivot='key' type='quantitative' />
+            <column-instance column='[Number of Records]' derivation='Count' name='[cnt:Number of Records:qk]' pivot='key' type='quantitative' />
+            <column datatype='string' name='[from_station_id]' role='dimension' type='nominal' />
+            <column datatype='string' name='[from_station_name]' role='dimension' type='nominal' />
+            <column-instance column='[timeDiff]' derivation='Max' name='[max:timeDiff:qk]' pivot='key' type='quantitative' />
+            <column-instance column='[from_station_id]' derivation='None' name='[none:from_station_id:nk]' pivot='key' type='nominal' />
+            <column-instance column='[from_station_name]' derivation='None' name='[none:from_station_name:nk]' pivot='key' type='nominal' />
+            <column-instance column='[to_station_id]' derivation='None' name='[none:to_station_id:nk]' pivot='key' type='nominal' />
+            <column datatype='real' name='[timeDiff]' role='measure' type='quantitative' />
+            <column datatype='string' name='[to_station_id]' role='dimension' type='nominal' />
+          </datasource-dependencies>
+          <filter class='quantitative' column='[federated.1buzi3c0w38a8b13w5q4k0htrbz2].[max:timeDiff:qk]' included-values='in-range'>
+            <min>-346.0</min>
+            <max>10000.0</max>
+          </filter>
+          <filter class='categorical' column='[federated.1buzi3c0w38a8b13w5q4k0htrbz2].[none:from_station_id:nk]'>
+            <groupfilter from='&quot;BT-01&quot;' function='range' level='[none:from_station_id:nk]' to='&quot;WF-04&quot;' user:ui-domain='database' user:ui-enumeration='inclusive' user:ui-marker='enumerate' />
+          </filter>
+          <filter class='categorical' column='[federated.1buzi3c0w38a8b13w5q4k0htrbz2].[none:to_station_id:nk]'>
+            <groupfilter from='&quot;BT-01&quot;' function='range' level='[none:to_station_id:nk]' to='&quot;WF-04&quot;' user:ui-domain='database' user:ui-enumeration='inclusive' user:ui-marker='enumerate' />
+          </filter>
+          <slices>
+            <column>[federated.1buzi3c0w38a8b13w5q4k0htrbz2].[max:timeDiff:qk]</column>
+            <column>[federated.1buzi3c0w38a8b13w5q4k0htrbz2].[none:from_station_id:nk]</column>
+            <column>[federated.1buzi3c0w38a8b13w5q4k0htrbz2].[none:to_station_id:nk]</column>
+          </slices>
+          <aggregation value='true' />
+        </view>
+        <style>
+          <style-rule element='mark'>
+            <encoding attr='color' field='[federated.1buzi3c0w38a8b13w5q4k0htrbz2].[avg:timeDiff:qk]' palette='red_green_gold_diverging_10_0' symmetric='false' type='interpolated' />
+          </style-rule>
+          <style-rule element='worksheet'>
+            <format attr='display-field-labels' scope='rows' value='false' />
+          </style-rule>
+          <style-rule element='map-layer'>
+            <format attr='enabled' id='tab_base' value='true' />
+            <format attr='enabled' id='um_lcover' value='true' />
+            <format attr='enabled' id='tab_coastline' value='false' />
+            <format attr='enabled' id='pp2_line' value='false' />
+            <format attr='enabled' id='light_adm0_bnd' value='false' />
+            <format attr='enabled' id='light_adm0_lbl' value='false' />
+            <format attr='enabled' id='um_adm0_bnd' value='true' />
+            <format attr='enabled' id='um_adm0_lbl' value='true' />
+            <format attr='enabled' id='light_pp2_statebounds' value='false' />
+            <format attr='enabled' id='light_pp2_statelabels' value='false' />
+            <format attr='enabled' id='pp2_adminlabels' value='false' />
+            <format attr='enabled' id='pp2_statebounds' value='true' />
+            <format attr='enabled' id='pp2_statelabels' value='true' />
+            <format attr='enabled' id='countybounds' value='false' />
+            <format attr='enabled' id='countylabels' value='false' />
+            <format attr='enabled' id='zipbounds' value='false' />
+            <format attr='enabled' id='ziplabels' value='false' />
+            <format attr='enabled' id='tab_areabounds' value='false' />
+            <format attr='enabled' id='tab_arealabels' value='false' />
+            <format attr='enabled' id='tab_msabounds' value='false' />
+            <format attr='enabled' id='tab_msalabels' value='false' />
+          </style-rule>
+          <style-rule element='map'>
+            <format attr='washout' value='0.0' />
+          </style-rule>
+        </style>
+        <panes>
+          <pane>
+            <view>
+              <breakdown value='auto' />
+            </view>
+            <mark class='Automatic' />
+            <mark-sizing mark-sizing-setting='marks-scaling-off' />
+            <encodings>
+              <color column='[federated.1buzi3c0w38a8b13w5q4k0htrbz2].[avg:timeDiff:qk]' />
+              <size column='[federated.1buzi3c0w38a8b13w5q4k0htrbz2].[cnt:Number of Records:qk]' />
+              <lod column='[federated.1buzi3c0w38a8b13w5q4k0htrbz2].[none:from_station_name:nk]' />
+            </encodings>
+            <style>
+              <style-rule element='mark'>
+                <format attr='size' value='3.922652006149292' />
+              </style-rule>
+            </style>
+          </pane>
+        </panes>
+        <rows>[federated.1buzi3c0w38a8b13w5q4k0htrbz2].[none:from_station_id:nk]</rows>
+        <cols>[federated.1buzi3c0w38a8b13w5q4k0htrbz2].[none:to_station_id:nk]</cols>
+      </table>
+    </worksheet>
+    <worksheet name='Sheet 2'>
+      <table>
+        <view>
+          <datasources>
+            <datasource caption='trips_processed (trips_processed2)' name='federated.1buzi3c0w38a8b13w5q4k0htrbz2' />
+          </datasources>
+          <datasource-dependencies datasource='federated.1buzi3c0w38a8b13w5q4k0htrbz2'>
+            <column datatype='integer' name='[Number of Records]' role='measure' type='quantitative' user:auto-column='numrec'>
+              <calculation class='tableau' formula='1' />
+            </column>
+            <column-instance column='[Number of Records]' derivation='Sum' name='[sum:Number of Records:qk]' pivot='key' type='quantitative' />
+          </datasource-dependencies>
+          <aggregation value='true' />
+        </view>
+        <style />
+        <panes>
+          <pane>
+            <view>
+              <breakdown value='auto' />
+            </view>
+            <mark class='Automatic' />
+          </pane>
+        </panes>
+        <rows>[federated.1buzi3c0w38a8b13w5q4k0htrbz2].[sum:Number of Records:qk]</rows>
+        <cols />
+      </table>
+    </worksheet>
+  </worksheets>
+  <windows saved-dpi-scale-factor='1.25' source-height='37'>
+    <window class='worksheet' maximized='true' name='Sheet 1'>
+      <cards>
+        <edge name='left'>
+          <strip size='160'>
+            <card type='pages' />
+            <card type='filters' />
+            <card type='marks' />
+          </strip>
+        </edge>
+        <edge name='top'>
+          <strip size='2147483647'>
+            <card type='columns' />
+          </strip>
+          <strip size='2147483647'>
+            <card type='rows' />
+          </strip>
+          <strip size='2147483647'>
+            <card type='title' />
+          </strip>
+        </edge>
+        <edge name='right'>
+          <strip size='160'>
+            <card param='[federated.1buzi3c0w38a8b13w5q4k0htrbz2].[none:from_station_id:nk]' type='filter' />
+            <card pane-specification-id='0' param='[federated.1buzi3c0w38a8b13w5q4k0htrbz2].[avg:timeDiff:qk]' type='color' />
+            <card pane-specification-id='0' param='[federated.1buzi3c0w38a8b13w5q4k0htrbz2].[cnt:Number of Records:qk]' type='size' />
+          </strip>
+        </edge>
+      </cards>
+      <viewpoint>
+        <zoom type='entire-view' />
+        <highlight>
+          <color-one-way>
+            <field>[federated.1buzi3c0w38a8b13w5q4k0htrbz2].[avg:timeDiff:qk]</field>
+            <field>[federated.1buzi3c0w38a8b13w5q4k0htrbz2].[none:from_station_id:nk]</field>
+            <field>[federated.1buzi3c0w38a8b13w5q4k0htrbz2].[none:from_station_name:nk]</field>
+            <field>[federated.1buzi3c0w38a8b13w5q4k0htrbz2].[none:to_station_id:nk]</field>
+            <field>[federated.1buzi3c0w38a8b13w5q4k0htrbz2].[none:to_station_name:nk]</field>
+            <field>[federated.1buzi3c0w38a8b13w5q4k0htrbz2].[none:usertype:nk]</field>
+          </color-one-way>
+        </highlight>
+      </viewpoint>
+    </window>
+    <window class='worksheet' name='Sheet 2'>
+      <cards>
+        <edge name='left'>
+          <strip size='160'>
+            <card type='pages' />
+            <card type='filters' />
+            <card type='marks' />
+          </strip>
+        </edge>
+        <edge name='top'>
+          <strip size='2147483647'>
+            <card type='columns' />
+          </strip>
+          <strip size='2147483647'>
+            <card type='rows' />
+          </strip>
+          <strip size='2147483647'>
+            <card type='title' />
+          </strip>
+        </edge>
+      </cards>
+    </window>
+  </windows>
+  <thumbnails>
+    <thumbnail height='192' name='Sheet 1' width='192'>
+      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
+      /w8CgQjLUlLhAgAAAABJRU5ErkJggg==
+    </thumbnail>
+    <thumbnail height='192' name='Sheet 2' width='133'>
+      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
+    </thumbnail>
+  </thumbnails>
+</workbook>
