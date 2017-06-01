@@ -13,7 +13,7 @@ library(chron)
 #setwd("/Users/tormagnusmichaelsen/Documents/BDA/Project/BDA17-Bike-Share-Analysis/data")
 setwd("D:/Sondre/Dokumenter/UCSD/IRGN452 BigDataAnalytics/Project/BDA17-Bike-Share-Analysis/")
 
-trips<-read.csv("data/trip.csv") #Set nrows for testing purposes
+trips<-read.csv("data/trip.csv", stringsAsFactors = FALSE, sep = ";") #Set nrows for testing purposes
 weather<-read.csv("data/weather.csv")
 stations<-read.csv("data/station.csv")
 
@@ -21,7 +21,7 @@ distance.matrix <- read.csv("gmapsData/gmapsDistMatrix.csv")
 time.matrix <- read.csv("gmapsData/gmapsTimeMatrix.csv")
 
 #Remove rows where station id is not in station matrix
-trips<-trips[(trips$from_station_id %in% stations$station_id & trips$to_station_id %in% stations$station_id ),]
+trips<-trips[(trips$from_station_id %in% stations$station_id & trips$to_station_id %in% stations$station_id ), , drop = FALSE]
 #Transform time data to dates, first to characters
 
 #-----------convert to characters----------- (don't need if stringsAsFactors = FALSE)
