@@ -172,16 +172,30 @@ hourlyPlot<-ggplot(hourly, aes(x = as.factor(sHour), y = departures , colour = s
      xlab('Hour')+
      ylab('rentals')+
      theme_minimal()
+ggsave("Hourly trips across days.png")
    
 
 #pick-up times by agegroups
-ByAgeGroup<- group_by(trips_df, sHour, Agecat1)
+StartByAgeGroup<- group_by(trips_df, sHour, Agecat1)
 
-SumByAgeGroup <- dplyr::summarize(ByAgeGroup,rentals = n())
+SumStartByAgeGroup <- dplyr::summarize(StartByAgeGroup,rentals = n())
 #bug fixed: grouping by agecat1 and then sHour doesn't produce correct plot
-hourlyByAge<-ggplot(ByAgeGroup, aes(x=as.factor(sHour), y = rentals, colour = Agecat1, group = Agecat1))+
-     geom_point(data = SumByAgeGroup, aes(group = Agecat1)) +
-     geom_line(data = SumByAgeGroup, aes(group = Agecat1)) +
+hourlyStartByAge<-ggplot(StartByAgeGroup, aes(x=as.factor(sHour), y = rentals, colour = Agecat1, group = Agecat1))+
+     geom_point(data = SumStartByAgeGroup, aes(group = Agecat1)) +
+     geom_line(data = SumStartByAgeGroup, aes(group = Agecat1)) +
+     scale_x_discrete() +
+     #scale_y_continuous(breaks = seq(0,900,100))+
+     xlab('Hour')+
+     ylab('rentals')
+     #theme_minimal()
+
+EndByAgeGroup<- group_by(trips_df, sHour, Agecat1)
+
+SumEndByAgeGroup <- dplyr::summarize(EndByAgeGroup,rentals = n())
+#bug fixed: grouping by agecat1 and then sHour doesn't produce correct plot
+hourlyEndByAge<-ggplot(EndByAgeGroup, aes(x=as.factor(sHour), y = rentals, colour = Agecat1, group = Agecat1))+
+     geom_point(data = SumEndByAgeGroup, aes(group = Agecat1)) +
+     geom_line(data = SumEndByAgeGroup, aes(group = Agecat1)) +
      scale_x_discrete() +
      #scale_y_continuous(breaks = seq(0,900,100))+
      xlab('Hour')+
@@ -201,22 +215,53 @@ UserTypePlot<-ggplot(ByUserType, aes(x = as.factor(sHour), y = rentals, colour =
   ylab('rentals')+
   theme_minimal() 
 
-#plot over timediff vs usertypes and times
-TimeVsAge <- group_by(trips_df,sHour,Agecat1,timeDiff) #%>% filter(!is.na(usertype))
-SumByTimeAge<-dplyr::summarize(TimeVsAge,median = median(timeDiff))
+#plot over timediff vs userage and times, might be most reasonable to use mean of timediff
 
-UserTypePlot<-ggplot(ByUserType, aes(x = as.factor(sHour), y = rentals, colour = usertype))+
-  geom_line(data = SumByUserType, aes(group = usertype))+
-  geom_point(data = SumByUserType, aes(group = usertype)) +
+TimeDiffVsAge <- group_by(trips_df,sHour, Agecat1) #%>% filter(!is.na(usertype))
+SumByTimeAge<-dplyr::summarize(TimeDiffVsAge, mean = mean(timeDiff))
+
+ByTimeAgePlot<-ggplot(TimeDiffVsAge, aes(x = as.factor(sHour), y = mean, colour = Agecat1))+
+  geom_line(data = SumByTimeAge, aes(group = Agecat1))+
+  geom_point(data = SumByTimeAge, aes(group = Agecat1)) +
   scale_x_discrete()+
-  scale_y_continuous(breaks = seq(0,4000,200))+
   xlab('Hour')+
-  ylab('rentals')+
+  ylab('mean of timediff')+
   theme_minimal() 
-#plot over timediff vs agegroups
-#plot over timediff vs weather
-#
-  
+
+#Plot over timediff vs usertype and times
+TimeDiffVsUser<- group_by(trips_df, sHour, usertype)
+SumByTimeUser<- dplyr::summarize(TimeDiffVsUser, median = median(timeDiff))
+ByTimeUserPlot<- ggplot(TimeDiffVsUser, aes(x = as.factor(sHour), y = median, colour = usertype))+
+  geom_line(data = SumByTimeUser, aes(group = usertype))+
+  geom_point(data = SumByTimeUser, aes(group = usertype))+
+  scale_x_discrete()+
+   xlab('Hour')+
+  ylab('median of timediff')+
+  theme_minimal() 
+
+trips_members<-filter(trips_df, usertype=="Member")
+TimeDiffMemberWeather<-group_by(trips_members, sHour, Events)
+DiffMeanMemberByWeather<-dplyr::summarize(TimeDiffVsWeather, mean = mean(timeDiff))
+MemberVsWeather<-ggplot(TimeDiffVsWeather, aes(x = as.factor(sHour), y = mean, colour = Events))+
+   geom_line(data = DiffMeanByWeather, aes(group = Events))+
+  geom_point(data = DiffMeanByWeather, aes(group = Events))+
+  scale_x_discrete()+
+   xlab('Hour')+
+  ylab('mean of timediff')+
+  theme_minimal()
+
+trips_nonMembers<-filter(trips_df, usertype=="Short-Term Pass Holder")
+TimeDiffNonMemberVsWeather<-group_by(trips_nonMembers, sHour, Events)
+DiffMeanNonMemberByWeather<-dplyr::summarize(TimeDiffNonMemberVsWeather, mean = mean(timeDiff))
+NonMemberVsWeather<-ggplot(TimeDiffNonMemberVsWeather, aes(x = as.factor(sHour), y = mean, colour = Events))+
+   geom_line(data = DiffMeanNonMemberByWeather, aes(group = Events))+
+  geom_point(data = DiffMeanNonMemberByWeather, aes(group = Events))+
+  scale_x_discrete()+
+   xlab('Hour')+
+  ylab('mean of timediff')+
+  theme_minimal()
+
+
 
 ```
 
