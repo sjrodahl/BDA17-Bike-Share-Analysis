@@ -138,7 +138,9 @@ seattle_impr<-get_map(location = c(lon = mean(lon), lat = mean(lat)), zoom = 13,
 map_fromPoints<-ggmap(seattle_impr) + 
   geom_point(data = from_stations, 
              aes(x = from_long,y = from_lat, size = departures), 
-             color = "orange")
+             color = "orange")+
+ggtitle('map over total rentals from stations.png')+
+ggsave('plots/map over total rentals from stations.png')
 
 
 #read that with osm one won't have access to satellite images so this is dropped
@@ -171,9 +173,10 @@ hourlyPlot<-ggplot(hourly, aes(x = as.factor(sHour), y = departures , colour = s
      scale_y_continuous(breaks = seq(0,900,100))+
      xlab('Hour')+
      ylab('rentals')+
-     theme_minimal()
-ggsave("Hourly trips across days.png")
-   
+    ggtitle('Hourly trips across days')+
+     theme_minimal()+
+ggsave("plots/Hourly trips across days.png")
+
 
 #pick-up times by agegroups
 StartByAgeGroup<- group_by(trips_df, sHour, Agecat1)
@@ -186,8 +189,10 @@ hourlyStartByAge<-ggplot(StartByAgeGroup, aes(x=as.factor(sHour), y = rentals, c
      scale_x_discrete() +
      #scale_y_continuous(breaks = seq(0,900,100))+
      xlab('Hour')+
-     ylab('rentals')
-     #theme_minimal()
+     ylab('rentals')+
+     ggtitle('Hourly trips across agegroups')+
+     theme_minimal()+
+ggsave("plots/Hourly trips across agegroups.png")
 
 EndByAgeGroup<- group_by(trips_df, sHour, Agecat1)
 
@@ -200,7 +205,9 @@ hourlyEndByAge<-ggplot(EndByAgeGroup, aes(x=as.factor(sHour), y = rentals, colou
      #scale_y_continuous(breaks = seq(0,900,100))+
      xlab('Hour')+
      ylab('rentals')
+     
      #theme_minimal()
+
 
 #plot over pickup times for member
 ByUserType <- group_by(trips_df,sHour, usertype) #%>% filter(!is.na(usertype))
@@ -213,20 +220,24 @@ UserTypePlot<-ggplot(ByUserType, aes(x = as.factor(sHour), y = rentals, colour =
   scale_y_continuous(breaks = seq(0,4000,200))+
   xlab('Hour')+
   ylab('rentals')+
-  theme_minimal() 
+  theme_minimal() +
+ggtitle('Hourly trips across usertype')+
+ggsave("plots/Hourly trips across usertype.png")
 
 #plot over timediff vs userage and times, might be most reasonable to use mean of timediff
 
 TimeDiffVsAge <- group_by(trips_df,sHour, Agecat1) #%>% filter(!is.na(usertype))
 SumByTimeAge<-dplyr::summarize(TimeDiffVsAge, mean = mean(timeDiff))
 
-ByTimeAgePlot<-ggplot(TimeDiffVsAge, aes(x = as.factor(sHour), y = mean, colour = Agecat1))+
+TimeDiffByAgePlot<-ggplot(TimeDiffVsAge, aes(x = as.factor(sHour), y = mean, colour = Agecat1))+
   geom_line(data = SumByTimeAge, aes(group = Agecat1))+
   geom_point(data = SumByTimeAge, aes(group = Agecat1)) +
   scale_x_discrete()+
   xlab('Hour')+
   ylab('mean of timediff')+
-  theme_minimal() 
+  theme_minimal() +
+  ggtitle('Time differences between estimates and actual time by agecategories')+
+ggsave("plots/Time differences by agecategories.png")
 
 #Plot over timediff vs usertype and times
 TimeDiffVsUser<- group_by(trips_df, sHour, usertype)
@@ -237,7 +248,9 @@ ByTimeUserPlot<- ggplot(TimeDiffVsUser, aes(x = as.factor(sHour), y = median, co
   scale_x_discrete()+
    xlab('Hour')+
   ylab('median of timediff')+
-  theme_minimal() 
+  theme_minimal() +
+  ggtitle('Time differences by usertypes')+
+ggsave("plots/Time differences by usertypes.png")
 
 trips_members<-filter(trips_df, usertype=="Member")
 TimeDiffMemberWeather<-group_by(trips_members, sHour, Events)
@@ -248,7 +261,9 @@ MemberVsWeather<-ggplot(TimeDiffVsWeather, aes(x = as.factor(sHour), y = mean, c
   scale_x_discrete()+
    xlab('Hour')+
   ylab('mean of timediff')+
-  theme_minimal()
+  theme_minimal()+
+  ggtitle('time differences for members by weather')+
+ggsave("plots/Time differences for members by weather.png")
 
 trips_nonMembers<-filter(trips_df, usertype=="Short-Term Pass Holder")
 TimeDiffNonMemberVsWeather<-group_by(trips_nonMembers, sHour, Events)
@@ -259,7 +274,9 @@ NonMemberVsWeather<-ggplot(TimeDiffNonMemberVsWeather, aes(x = as.factor(sHour),
   scale_x_discrete()+
    xlab('Hour')+
   ylab('mean of timediff')+
-  theme_minimal()
+  theme_minimal()+
+  ggtitle('time differences for members by weather')+
+ggsave("plots/Time differences for members by weather.png")
 
 
 

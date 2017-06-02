@@ -9,6 +9,8 @@ library(ggmap) #remember to cite ggmap
 library(timeDate)
 library(chron)
 library(plyr)
+library(hydroTSM)
+
 
 
 #Comment out the other user.
@@ -167,6 +169,10 @@ from_stations$from_lat<-as.numeric(as.character(from_stations$from_lat))
 
 from_stations$departures<-as.numeric(from_stations$departures)
 #end dataprep for eda
+trips$season<-time2season(trips$onlyDate, out.fmt = "seasons", type="FrenchPolynesia")
+trips$season<-as.factor(trips$season)
+
+
 
 
 write.csv(trips, "data/trips_processed.csv")
