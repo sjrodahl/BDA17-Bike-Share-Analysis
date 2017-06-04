@@ -127,36 +127,54 @@ lat<-c(47.58, 47.68)
 lon<-c(-122.25, -122.38)
 seattle_impr<-get_map(location = c(lon = mean(lon), lat = mean(lat)), zoom = 13, maptype = "satellite", source = "google")
 
+SumByTripsUnique$alpha<-SumByTripsUnique$departures/(max(SumByTripsUnique$departures))
+map_curvedLines<-ggmap(seattle_impr,extent = "normal") + geom_segment(data = SumByTripsUnique, aes(x = from_long,y = from_lat, xend = to_long, yend = to_lat), alpha = SumByTripsUnique$alpha, color = "yellow")  + coord_cartesian()
 
-#seattle_zoom<-get_map(location = "seattle", zoom = 12, source = "google", maptype = "hybrid")
-#too far out, and zoom 13 gir: Removed 12 rows containing missing values (geom_point). 
-
-
-
-#map_curvedLines<-ggmap(seattle_coordmap,extent = "normal") + geom_curve(data = sub1, #aes(x = from_long,y = from_lat, xend = to_long, yend = to_lat), angle = 45, color = #"blue") + coord_cartesian()
+map_curvedLines
 
 map_fromPoints<-ggmap(seattle_impr) + 
   geom_point(data = from_stations, 
-             aes(x = from_long,y = from_lat, size = departures), 
-             color = "orange")+
+             aes(x = from_long,y = from_lat, size = departures, color = fromStationGroup))+
 ggtitle('map over total rentals from stations.png')+
 ggsave('plots/map over total rentals from stations.png')
 
-
-#read that with osm one won't have access to satellite images so this is dropped
-#seattle_osm<- openmap(c(47.68,-122.38), c(47.58,-122.25),type = "skobbler")
-#mapbox, osm, opencyclemap, 
-#plot(seattle_osm)
-
+#map with stations colored after which group the belong, first summarize over groups
+#also check that trips_df is generated already
+DeparturesByStationGroup<-group_by(trips_df, fromStationGroup)
+sumDeparturesByStationGroup<-dplyr::summarize(DeparturesByStationGroup, departures = n())
 
 
-#from_stations_wo_count<-unique(trips[c("from_lat", "from_long")]) #doesn't give count
+#map with routes
+#first group by pairs of from long and lat
+byTrip<-group_by(trips_df,from_station_id, to_station_id)
+SumByTrip<-dplyr::summarize(byTrip, departures = n())
+#need ti factorize to and from station_id's
+SumByTrip$from_station_id<-as.factor(SumByTrip$from_station_id)
+SumByTrip$to_station_id<-as.factor(SumByTrip$to_station_id)
+
+#need to add station coordinates since summarize removes this
+SumByTrip$from_long<-(stations$long[match(SumByTrip$from_station_id,stations$station_id)])
+SumByTrip$from_lat<-(stations$lat[match(SumByTrip$from_station_id,stations$station_id)])
+
+SumByTrip$to_long<-(stations$long[match(SumByTrip$to_station_id,stations$station_id)])
+SumByTrip$to_lat<-(stations$lat[match(SumByTrip$to_station_id,stations$station_id)])
 
 
+map_routes<-ggmap(seattle_impr)+
+geom_point(data = stations,
+              aes(x =long, y = lat),
+            colour = "orange",
+              alpha =0.7) +
+  geom_curve(data = SumByTrip,
+              aes(x = from_long,y = from_lat, xend = to_long, yend = to_lat, size = departures), 
+              color = "white") +
+   coord_cartesian()+
+ ggtitle('linesegment over trips.png')+
 
-#formatting a version of trips to work with plyr
-trips_df<-tbl_df(trips)
-
+route(from, to, mode = c("driving", "walking", "bicycling", "transit"),
+  structure = c("legs", "route"), output = c("simple", "all"),
+  alternatives = FALSE, messaging = FALSE, sensor = FALSE,
+  override_limit = FALSE)
 
 #lineplot over trips by day and time
 hourly <- group_by(trips_df, sHour, sDay)
@@ -278,7 +296,11 @@ NonMemberVsWeather<-ggplot(TimeDiffNonMemberVsWeather, aes(x = as.factor(sHour),
   ggtitle('time differences for members by weather')+
 ggsave("plots/Time differences for members by weather.png")
 
-
+numbers <- seq(from=0, to=0.2, by=0.01)
+rands<-sample(numbers, size=1653, replace=TRUE)
+tripcombs$rand<-rands
+tripcombs$rand[4]<-0.9
+#tripcombs$rand<-as.factor(tripcombs$rand)
 
 ```
 

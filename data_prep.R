@@ -17,7 +17,7 @@ library(hydroTSM)
 setwd("/Users/tormagnusmichaelsen/Documents/BDA/Project/BDA17-Bike-Share-Analysis")
 #setwd("D:/Sondre/Dokumenter/UCSD/IRGN452 BigDataAnalytics/Project/BDA17-Bike-Share-Analysis/")
 
-trips<-read.csv("data/trip.csv") #Set nrows for testing purposes
+trips<-read.csv("data/trip.csv", stringsAsFactors = FALSE, sep = ";") #Set nrows for testing purposes
 weather<-read.csv("data/weather.csv")
 stations<-read.csv("data/station.csv")
 
@@ -25,8 +25,13 @@ distance.matrix <- read.csv("gmapsData/gmapsDistMatrix.csv")
 time.matrix <- read.csv("gmapsData/gmapsTimeMatrix.csv")
 
 #Remove rows where station id is not in station matrix
-trips<-trips[(trips$from_station_id %in% stations$station_id & trips$to_station_id %in% stations$station_id ),]
+trips<-trips[(trips$from_station_id %in% stations$station_id & trips$to_station_id %in% stations$station_id ), , drop = FALSE]
 #Transform time data to dates, first to characters
+
+
+#formatting a version of trips to work with plyr
+trips_df<-tbl_df(trips)
+
 
 #-----------convert to characters----------- (don't need if stringsAsFactors = FALSE)
 trips$startDate<- as.character(trips$starttime) #to characters
@@ -110,6 +115,7 @@ tripcombs$from_lat<-stations$lat[match(tripcombs$V1,stations$station_id)]
 tripcombs$to_long<-stations$long[match(tripcombs$V2,stations$station_id)]
 tripcombs$to_lat<-stations$lat[match(tripcombs$V2,stations$station_id)]
 
+SumByTripsUnique <- SumByTrip[SumByTrip$from_station_id != SumByTrip$to_station_id,]
 
 
 
@@ -166,11 +172,17 @@ names(from_stations)[3]<-"departures"
 
 from_stations$from_long<-as.numeric(as.character(from_stations$from_long))
 from_stations$from_lat<-as.numeric(as.character(from_stations$from_lat))
+from_stations$fromStationGroup<-gsub( "-.*$","",stations$station_id)
 
 from_stations$departures<-as.numeric(from_stations$departures)
 #end dataprep for eda
 trips$season<-time2season(trips$onlyDate, out.fmt = "seasons", type="FrenchPolynesia")
 trips$season<-as.factor(trips$season)
+
+#add stationgroup to trips
+trips_df$fromStationGroup<-gsub( "-.*$","",trips$from_station_id)#or
+
+#trips_df$fromStationGroup<-stri_extract(trips$from_station_id, regex='[^-]*')
 
 
 
