@@ -123,14 +123,26 @@ getGoogleInfo<- function(origin, destination, df){
 # doesn't return the right coordinates
 #trying another method:
 
+
+# "terrain", "terrain-background", "satellite",
+#   "roadmap", "hybrid", "toner", "watercolor", "terrain-labels", "terrain-lines",
+#   "toner-2010", "toner-2011", "toner-background", "toner-hybrid",
+#   "toner-labels", "toner-lines", "toner-lite"
+
 lat<-c(47.58, 47.68)
 lon<-c(-122.25, -122.38)
 seattle_impr<-get_map(location = c(lon = mean(lon), lat = mean(lat)), zoom = 13, maptype = "satellite", source = "google")
 
 SumByTripsUnique$alpha<-SumByTripsUnique$departures/(max(SumByTripsUnique$departures))
-map_curvedLines<-ggmap(seattle_impr,extent = "normal") + geom_segment(data = SumByTripsUnique, aes(x = from_long,y = from_lat, xend = to_long, yend = to_lat), alpha = SumByTripsUnique$alpha, color = "yellow")  + coord_cartesian()
+
+map_curvedLines<-ggmap(seattle_impr,extent = "normal") + geom_curve(data = SumByTripsUnique, aes(x = from_long,y = from_lat, xend = to_long, yend = to_lat), alpha = SumByTripsUnique$alpha, color = "#bb25f7")  + coord_cartesian()
 
 map_curvedLines
+
+map_straightLines<-ggmap(seattle_impr,extent = "normal") + geom_segment(data = SumByTripsUnique, aes(x = from_long,y = from_lat, xend = to_long, yend = to_lat), alpha = SumByTripsUnique$alpha, color = "red")  + coord_cartesian()
+
+map_straightLines
+
 
 map_fromPoints<-ggmap(seattle_impr) + 
   geom_point(data = from_stations, 
@@ -299,8 +311,26 @@ ggsave("plots/Time differences for members by weather.png")
 numbers <- seq(from=0, to=0.2, by=0.01)
 rands<-sample(numbers, size=1653, replace=TRUE)
 tripcombs$rand<-rands
-tripcombs$rand[4]<-0.9
 #tripcombs$rand<-as.factor(tripcombs$rand)
+
+
+#plotting routes in map
+# routes<-route(SumByTripsUnique$from_station, SumByTripsUnique$to_station, mode = "bicycling", structure = "route")
+
+SumByTripsUnique$fromCoords <- paste(SumByTripsUnique$from_lat,SumByTripsUnique$from_long, sep = "+")
+
+SumByTripsUnique$toCoords <- paste(SumByTripsUnique$to_lat,SumByTripsUnique$to_long, sep = "+")
+
+routes<-lapply(1:1500,
+       function(x) {
+           Sys.sleep(0.5)
+           ggmap::route(from = SumByTripsUnique$fromCoords[[x]],
+                         to = SumByTripsUnique$toCoords[[x]],
+                         mode = "bicycling",
+                         output = "simple")
+           } ) 
+
+
 
 ```
 
