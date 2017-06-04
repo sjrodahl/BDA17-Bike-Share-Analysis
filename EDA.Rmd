@@ -22,7 +22,8 @@ library(classInt)
 library(maps)
 library(OpenStreetMap)
 #----------general distribution plots------
-setwd("/Users/tormagnusmichaelsen/Documents/BDA/Project/BDA17-Bike-Share-Analysis")
+#setwd("/Users/tormagnusmichaelsen/Documents/BDA/Project/BDA17-Bike-Share-Analysis")
+setwd("D:/Sondre/Dokumenter/UCSD/IRGN452 BigDataAnalytics/Project/BDA17-Bike-Share-Analysis/")
 
 trips<-read.csv("data/trips_processed.csv")
 weather<-read.csv("data/weather_processed2.csv")
@@ -171,6 +172,7 @@ SumByTrip$from_lat<-(stations$lat[match(SumByTrip$from_station_id,stations$stati
 SumByTrip$to_long<-(stations$long[match(SumByTrip$to_station_id,stations$station_id)])
 SumByTrip$to_lat<-(stations$lat[match(SumByTrip$to_station_id,stations$station_id)])
 
+SumByTripsUnique <- SumByTrip[!(SumByTrip$from_station_id==SumByTrip$to_station_id),]
 
 map_routes<-ggmap(seattle_impr)+
 geom_point(data = stations,
@@ -321,16 +323,27 @@ SumByTripsUnique$fromCoords <- paste(SumByTripsUnique$from_lat,SumByTripsUnique$
 
 SumByTripsUnique$toCoords <- paste(SumByTripsUnique$to_lat,SumByTripsUnique$to_long, sep = "+")
 
-routes<-lapply(1:1500,
+numroutes <-20
+routes<-lapply(1:numroutes,
        function(x) {
            Sys.sleep(0.5)
            ggmap::route(from = SumByTripsUnique$fromCoords[[x]],
                          to = SumByTripsUnique$toCoords[[x]],
                          mode = "bicycling",
-                         output = "simple")
+                         output = "all")
            } ) 
 
+routeMap <- ggmap(seattle_impr)
 
+for (x in 1:numroutes){
+  r <- geom_leg(data=routes,aes(
+    x = startLon, xend = endLon,
+    y = startLat, yend = endLat,
+    color = "red"
+  ))
+  routeMap<-routeMap+r
+}
+routeMap
 
 ```
 
