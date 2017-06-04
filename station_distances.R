@@ -5,10 +5,10 @@ limit = 400
 
 setwd("D:/Sondre/Dokumenter/UCSD/IRGN452 BigDataAnalytics/Project/BDA17-Bike-Share-Analysis/")
 trips <- read.csv("data/trip.csv", stringsAsFactors = FALSE, sep = ";")
+stations<-read.csv("data/station.csv")
 #Remove trips that are not from standard stations:
 trips<-trips[(trips$from_station_id %in% stations$station_id & trips$to_station_id %in% stations$station_id ), , drop = FALSE]
 
-stations<-read.csv("data/station.csv")
 
 distance.matrix <- read.csv("gmapsData/gmapsDistMatrix.csv")
 distance.matrix[distance.matrix==0] <- 10000
