@@ -10,7 +10,7 @@ library(timeDate)
 library(chron)
 library(plyr)
 library(hydroTSM)
-
+library(data.table)
 
 
 #Comment out the other user.
@@ -29,10 +29,6 @@ trips<-trips[(trips$from_station_id %in% stations$station_id & trips$to_station_
 #Transform time data to dates, first to characters
 
 
-#formatting a version of trips to work with plyr
-trips_df<-tbl_df(trips)
-
-
 #-----------convert to characters----------- (don't need if stringsAsFactors = FALSE)
 trips$startDate<- as.character(trips$starttime) #to characters
 trips$endDate<- as.character(trips$stoptime) #to characters
@@ -49,12 +45,12 @@ trips$onlySTime<-format(trips$onlySTime, "%H:%M:%S")
 
 
 #------------add day of week, from startDate
-trips$sDay<- wday(trips$startDate, label = TRUE)
-trips$eDay<- wday(trips$endDate, label = TRUE)
+trips$sDay<- lubridate::wday(trips$startDate, label = TRUE)
+trips$eDay<- lubridate::wday(trips$endDate, label = TRUE)
 
 #------------add month, from startDate
-trips$sMonth<-month(trips$startDate, label = TRUE)
-trips$eMonth<-month(trips$endDate, label = TRUE)
+trips$sMonth<-lubridate::month(trips$startDate, label = TRUE)
+trips$eMonth<-lubridate::month(trips$endDate, label = TRUE)
 
 #------------add year, from startDate
 trips$sYear<-year(trips$startDate)
@@ -153,8 +149,20 @@ getGoogleInfo<- function(origin, destination, df){
 #could also be intersting to look into when people rent bicycles (after whole hours)
 
 #---------By agegroups-------
-trips$Agecat1<-cut(trips$age, c(19,25,35,45,55,63,81), right = FALSE)
+trips$Agecat1<-as.character(cut(trips$age, breaks =  c(19,25,35,45,55,63,82), 
+right = FALSE, labels = c('19-24','25-34','35-44','45-54','55-62','63-81')))
+trips$Agecat1<-as.factor(trips$Agecat1)
 
+trips$Agecat2<-as.character(cut(trips$age, breaks = c(19,35,62,82),
+right = FALSE, labels = c('19-34', '35-61', '62-81')))
+trips$Agecat2<-as.factor(trips$Agecat2)
+
+
+
+#another way to create agegroups:
+#agebreaks <- c(19,25,45,55,63,81)
+#agelabels= c("19-24","25-34","35-44","45-54","55-62","63-81")
+#setDT(trips_df)[ , agegroups:= cut(age, breaks= agebreaks, right= FALSE, labels= agelabels)]
 
 #Add time and distance columns to dataset
 trips[,"timeEst"] <- apply(trips[,c("from_station_id", "to_station_id")], 1, function(x) getGoogleInfo(x[1],x[2], time.matrix))
@@ -180,9 +188,16 @@ trips$season<-time2season(trips$onlyDate, out.fmt = "seasons", type="FrenchPolyn
 trips$season<-as.factor(trips$season)
 
 #add stationgroup to trips
-trips_df$fromStationGroup<-gsub( "-.*$","",trips$from_station_id)#or
+trips$fromStationGroup<-gsub( "-.*$","",trips$from_station_id)#or
+
+#add north/south to trips
+trips$delta<-(as.numeric(trips$to_lat, digits = 6)-as.numeric(trips$from_lat, digits = 6))
+trips$direction<-if_else(trips$delta>=0,"North", "South")
+trips$direction<-as.character(trips$direction)
+
 
 #trips_df$fromStationGroup<-stri_extract(trips$from_station_id, regex='[^-]*')
+trips_df<-tbl_df(trips)
 
 
 
