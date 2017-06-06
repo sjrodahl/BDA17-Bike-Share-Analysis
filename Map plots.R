@@ -95,6 +95,8 @@ map_fromPoints<-ggmap(seattle_toner) +
 #filter out non-members?
 #also need to add target for timeslots
 workHours<-c(7,8,9,10,15,16,17,18,19)
+otherHours<-c(1,2,3,4,5,6,11,12,13,14,20,21,22,23,24)
+              
 #add variable for morning or afternoon or middle of day?
 morning<-c(5,6,7,8,9)
 afternoon<-c(16,17,18,19) ##### this lines over is not included atm
@@ -126,7 +128,7 @@ mapAgeGroups<-ggmap(seattle_toner,extent = "normal") +
 #if subset: data = subset(SumByAgeCatUnique, Agecat1 == 25-34,
 #if all agecats is wanted: data = SumByAgeCatUnique,
 
-#----------------------Map with trips by agecat2----------------
+#----------------------Map with trips by agecat2 for workhours----------------
 byAgecat2<-group_by(trips_df,from_station_id, to_station_id,Agecat2) %>% 
   dplyr::filter(usertype=="Member") %>% filter(sHour %in% workHours )
 SumByAgeCat2<-dplyr::summarize(byAgecat2, departures = n())
@@ -152,7 +154,35 @@ mapAgecat2<-ggmap(seattle_toner,extent = "normal") +
                    color = Agecat2, 
                    alpha = opacity))  + coord_cartesian() + scale_alpha_identity() +
   scale_color_manual(values=c("#0434f2", "#06f702", "#fc0a2e"))+
-  ggsave("plots/agecat2.png")
+  ggsave("plots/agecat2 workhours.png")
+
+#----------------------Map with trips by agecat2 for non-workhours----------------
+byAgecat2<-group_by(trips_df,from_station_id, to_station_id,Agecat2) %>% 
+  dplyr::filter(usertype=="Member") %>% filter(sHour %in% otherHours )
+SumByAgeCat2<-dplyr::summarize(byAgecat2, departures = n())
+#add coordinates
+SumByAgeCat2$from_long<-(stations$long[match(SumByAgeCat2$from_station_id,stations$station_id)])
+SumByAgeCat2$from_lat<-(stations$lat[match(SumByAgeCat2$from_station_id,stations$station_id)])
+
+SumByAgeCat2$to_long<-(stations$long[match(SumByAgeCat2$to_station_id,stations$station_id)])
+SumByAgeCat2$to_lat<-(stations$lat[match(SumByAgeCat2$to_station_id,stations$station_id)])
+#remove trips to and from same stations
+SumByAgeCatUnique2 <- SumByAgeCat2[!(SumByAgeCat2$from_station_id==SumByAgeCat2$to_station_id),]
+#create opacityvalue in sumbycatunique
+SumByAgeCatUnique2$opacity<-SumByAgeCatUnique2$departures/max(SumByAgeCatUnique2$departures)
+alphaMin<-min(SumByAgeCatUnique2$opacity)
+alphaMax<-max(SumByAgeCatUnique2$opacity)
+#map
+mapAgecat2Other<-ggmap(seattle_toner,extent = "normal") + 
+  geom_segment(stat="identity",data = SumByAgeCatUnique2, 
+               aes(x = from_long,
+                   y = from_lat, 
+                   xend = to_long, 
+                   yend = to_lat, 
+                   color = Agecat2, 
+                   alpha = opacity))  + coord_cartesian() + scale_alpha_identity() +
+  scale_color_manual(values=c("#0434f2", "#06f702", "#fc0a2e"))+
+  ggsave("plots/agecat2 otherhours.png")
 
 #if subset: data = subset(SumByAgeCatUnique, Agecat1 == 25-34,
 #if all agecats is wanted: data = SumByAgeCatUnique,
@@ -174,61 +204,138 @@ map_fromPoints<-ggmap(seattle_impr) +
   ggsave('plots/map over total rentals from stations by stationgroups.png')
 
 
-#-----------------------maps for different agecats--------------------
+#-----------------------maps for different agecats, satellite--------------------
 mapAgeGroups1<-ggmap(seattle_impr,extent = "normal") + 
-geom_segment(stat="identity",data=subset(SumByAgeCatUnique, Agecat1 == "19-24"), 
+geom_segment(stat="identity",data=subset(SumByAgeCatUnique1, Agecat1 == "19-24"), 
 aes(
  x = from_long,
  y = from_lat, 
 xend = to_long, 
   yend = to_lat, 
-alpha = opacity), color = "#359aff"
+alpha = opacity), color = "#f7020e"
 )  + coord_cartesian() + scale_alpha_identity() 
 
 mapAgeGroups2<-ggmap(seattle_impr,extent = "normal") + 
-  geom_segment(data=subset(SumByAgeCatUnique, Agecat1 == "25-34"), 
+  geom_segment(stat="identity",data=subset(SumByAgeCatUnique1, Agecat1 == "25-34"), 
   aes(
   x = from_long,
       y = from_lat, 
      xend = to_long, 
    yend = to_lat, 
-alpha = opacity), color = "#359aff"
+alpha = opacity), color = "#f7020e"
 )  + coord_cartesian() + scale_alpha_identity() 
 
+mapAgeGroups3<-ggmap(seattle_impr,extent = "normal") + 
+  geom_segment(stat="identity",data=subset(SumByAgeCatUnique1, Agecat1 == "35-44"), 
+               aes(
+                 x = from_long,
+                 y = from_lat, 
+                 xend = to_long, 
+                 yend = to_lat, 
+                 alpha = opacity), color = "#f7020e"
+  )  + coord_cartesian() + scale_alpha_identity() 
 
 
 mapAgeGroups4<-ggmap(seattle_impr,extent = "normal") + 
-  geom_segment(data=subset(SumByAgeCatUnique, Agecat1 == "45-54"), 
+  geom_segment(stat="identity",data=subset(SumByAgeCatUnique1, Agecat1 == "45-54"), 
  aes(
 x = from_long,
 y = from_lat, 
 xend = to_long, 
  yend = to_lat, 
-alpha = opacity), color = "#359aff"
+alpha = opacity), color = "#f7020e"
 )  + coord_cartesian() + scale_alpha_identity() 
 
 mapAgeGroups5<-ggmap(seattle_impr,extent = "normal") + 
-  geom_segment(data=subset(SumByAgeCatUnique, Agecat1 == "55-62"), 
+  geom_segment(stat="identity",data=subset(SumByAgeCatUnique1, Agecat1 == "55-62"), 
 aes(
 x = from_long,
 y = from_lat, 
 xend = to_long, 
 yend = to_lat, 
-alpha = opacity), color = "#359aff"
+alpha = opacity), color = "#f7020e"
 )  + coord_cartesian() + scale_alpha_identity() 
 
 mapAgeGroups6<-ggmap(seattle_impr,extent = "normal") + 
-  geom_segment(stat="identity",data=subset(SumByAgeCatUnique, Agecat1 == "63-81"), 
+  geom_segment(stat="identity",data=subset(SumByAgeCatUnique1, Agecat1 == "63-81"), 
 aes(
 x = from_long,
 y = from_lat, 
 xend = to_long, 
 yend = to_lat, 
-alpha = opacity), color = "#359aff"
+alpha = opacity), color = "#f7020e"
 )  + coord_cartesian() + scale_alpha_identity() 
   #scale_alpha_discrete(range = c(0.1,1), limits=alphaMin:alphaMax)
 
 
+
+#-----------------------maps for different agecats, satellite--------------------
+tonermapAgeGroups1<-ggmap(seattle_toner,extent = "normal") + 
+  geom_segment(stat="identity",data=subset(SumByAgeCatUnique1, Agecat1 == "19-24"), 
+               aes(
+                 x = from_long,
+                 y = from_lat, 
+                 xend = to_long, 
+                 yend = to_lat, 
+                 alpha = opacity), color = "#f7020e"
+  )  + coord_cartesian() + scale_alpha_identity() 
+
+tonermapAgeGroups2<-ggmap(seattle_toner,extent = "normal") + 
+  geom_segment(stat="identity",data=subset(SumByAgeCatUnique1, Agecat1 == "25-34"), 
+               aes(
+                 x = from_long,
+                 y = from_lat, 
+                 xend = to_long, 
+                 yend = to_lat, 
+                 alpha = opacity), color = "#f7020e"
+  )  + coord_cartesian() + scale_alpha_identity() 
+
+tonermapAgeGroups3<-ggmap(seattle_toner,extent = "normal") + 
+  geom_segment(stat="identity",data=subset(SumByAgeCatUnique1, Agecat1 == "35-44"), 
+               aes(
+                 x = from_long,
+                 y = from_lat, 
+                 xend = to_long, 
+                 yend = to_lat, 
+                 alpha = opacity), color = "#f7020e"
+  )  + coord_cartesian() + scale_alpha_identity() 
+
+
+tonermapAgeGroups4<-ggmap(seattle_toner,extent = "normal") + 
+  geom_segment(stat="identity",data=subset(SumByAgeCatUnique1, Agecat1 == "45-54"), 
+               aes(
+                 x = from_long,
+                 y = from_lat, 
+                 xend = to_long, 
+                 yend = to_lat, 
+                 alpha = opacity), color = "#f7020e"
+  )  + coord_cartesian() + scale_alpha_identity() 
+
+tonermapAgeGroups5<-ggmap(seattle_toner,extent = "normal") + 
+  geom_segment(stat="identity",data=subset(SumByAgeCatUnique1, Agecat1 == "55-62"), 
+               aes(
+                 x = from_long,
+                 y = from_lat, 
+                 xend = to_long, 
+                 yend = to_lat, 
+                 alpha = opacity), color = "#f7020e"
+  )  + coord_cartesian() + scale_alpha_identity() 
+
+tonermapAgeGroups6<-ggmap(seattle_toner,extent = "normal") + 
+  geom_segment(stat="identity",data=subset(SumByAgeCatUnique1, Agecat1 == "63-81"), 
+               aes(
+                 x = from_long,
+                 y = from_lat, 
+                 xend = to_long, 
+                 yend = to_lat, 
+                 alpha = opacity), color = "#f7020e"
+  )  + coord_cartesian() + scale_alpha_identity() 
+#scale_alpha_discrete(range = c(0.1,1), limits=alphaMin:alphaMax)
+
+
+plot <- multiplot(mapAgeGroups1, mapAgeGroups2, mapAgeGroups3, mapAgeGroups4, mapAgeGroups5, mapAgeGroups6, cols = 3)
+
+plot2 <- multiplot(tonermapAgeGroups1, tonermapAgeGroups2, tonermapAgeGroups3, tonermapAgeGroups4, tonermapAgeGroups5, tonermapAgeGroups6, cols = 3)
 
 
 

@@ -1,7 +1,7 @@
 
 
 
-#-------------------------------------pickuptimes------------------------------
+#-------------------------------------hourly trips------------------------------
 #lineplot over trips by day and time, average over number of days
 hourly <- group_by(trips_df, sHour, sDay)
 #daily <- group_by(trips_df,sDay,sHour)
@@ -75,6 +75,22 @@ SeasonPlot<-ggplot(BySeason, aes(x = as.factor(sHour), y = rentals, colour = sea
   ggtitle('Hourly trips across seasons')+
   ggsave("plots/Hourly trips across season.png")
 
+
+#hourly trips by members by weather, normalized to number of days with each type of weather
+#dataprep
+ByUserType <- group_by(trips_df,sHour, usertype) #%>% filter(!is.na(usertype))
+SumByUserType<-dplyr::summarize(ByUserType,rentals = n())
+#plot
+UserTypePlot<-ggplot(ByUserType, aes(x = as.factor(sHour), y = rentals, colour = usertype))+
+  geom_line(data = SumByUserType, aes(group = usertype))+
+  geom_point(data = SumByUserType, aes(group = usertype)) +
+  scale_x_discrete()+
+  scale_y_continuous()+
+  xlab('Hour')+
+  ylab('rentals')+
+  theme_minimal() +
+  ggtitle('Hourly trips across usertype in different weather, averaged')+
+  ggsave("plots/Hourly trips across usertype, averaged over weather.png")
 
 
 

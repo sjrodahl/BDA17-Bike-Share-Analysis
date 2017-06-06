@@ -45,7 +45,7 @@ tripDurByDay<-ggplot(data = trips, aes(x = sDay, y = )) + geom_boxplot()
 
 
 #-----------Weather-------
-tripsByMinTemp<-ggplot(data = trips, aes(x = Min_TemperatureF)) + 
+tripsByMinTemp<-ggplot(data = trips, aes(x = Min_Temperature_F)) + 
   geom_histogram(color='black',fill='orange') +
   scale_x_continuous()
 
@@ -53,7 +53,7 @@ tripsByRainInch<-ggplot(data = trips, aes(x = Precipitation_In)) +
   geom_histogram(color='black',fill='orange') +
   scale_x_continuous()
 
-tripsByMeanTemp<-ggplot(data = trips, aes(x = Mean_TemperatureF)) + 
+tripsByMeanTemp<-ggplot(data = trips, aes(x = Mean_Temperature_F)) + 
   geom_histogram(color='black',fill='orange') +
   scale_x_continuous()
 
