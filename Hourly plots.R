@@ -77,13 +77,16 @@ SeasonPlot<-ggplot(BySeason, aes(x = as.factor(sHour), y = rentals, colour = sea
 
 
 #hourly trips by members by weather, normalized to number of days with each type of weather
+#notes: 
 #dataprep
-ByUserType <- group_by(trips_df,sHour, usertype) #%>% filter(!is.na(usertype))
-SumByUserType<-dplyr::summarize(ByUserType,rentals = n())
+hourlyMemberByWeather <- group_by(trips_members_df,sHour, Events) #%>% filter(!is.na(usertype))
+hourlySumMemberByWeather<-dplyr::summarize(hourlyMemberByWeather,rentals = n())
+#add number of days with types of weather
+hourlySumMemberByWeather$totalDays<-weatherSum$numberOfDays[match(hourlySumMemberByWeather$Events,weatherSum$Events)]
 #plot
-UserTypePlot<-ggplot(ByUserType, aes(x = as.factor(sHour), y = rentals, colour = usertype))+
-  geom_line(data = SumByUserType, aes(group = usertype))+
-  geom_point(data = SumByUserType, aes(group = usertype)) +
+hourlyPlotMemberByWeather<-ggplot(hourlyMemberByWeather, aes(x = as.factor(sHour), y = rentals/totalDays, colour = Events))+
+  geom_line(data = hourlySumMemberByWeather, aes(group = Events))+
+  geom_point(data = hourlySumMemberByWeather, aes(group = Events)) +
   scale_x_discrete()+
   scale_y_continuous()+
   xlab('Hour')+
@@ -131,14 +134,13 @@ ByTimeUserPlot<- ggplot(TimeDiffVsUser, aes(x = as.factor(sHour), y = median, co
 
 #plot over timedifference for trips by members and weather
 #dataprep
-trips_members<-filter(trips_df, usertype=="Member")
-TimeDiffMemberWeather<-group_by(trips_members, sHour, Events)
-DiffMeanMemberByWeather<-dplyr::summarize(TimeDiffVsWeather, mean = mean(timeDiff))
+TimeDiffMemberWeather<-group_by(trips_members_df, sHour, Events)
+DiffMeanMemberByWeather<-dplyr::summarize(TimeDiffMemberWeather, mean = mean(timeDiff))
 
 #plot
-MemberVsWeather<-ggplot(TimeDiffVsWeather, aes(x = as.factor(sHour), y = mean, colour = Events))+
-  geom_line(data = DiffMeanByWeather, aes(group = Events))+
-  geom_point(data = DiffMeanByWeather, aes(group = Events))+
+MemberVsWeather<-ggplot(TimeDiffMemberWeather, aes(x = as.factor(sHour), y = mean, colour = Events))+
+  geom_line(data = DiffMeanMemberByWeather, aes(group = Events))+
+  geom_point(data = DiffMeanMemberByWeather, aes(group = Events))+
   scale_x_discrete()+
   xlab('Hour')+
   ylab('mean of timediff')+

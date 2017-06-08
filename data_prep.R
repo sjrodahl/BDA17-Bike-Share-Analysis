@@ -85,15 +85,17 @@ trips$age<-2017 - trips$birthyear
 
 #--------------clean up weather$events-------
 weather$Events <- as.character(weather$Events)
-weather$Events[weather$Events== ""] <- "Clear"
+weather$Events[weather$Events== ""] <- ""
 weather$Events[weather$Events== "Fog-Rain"] <- "Fog , Rain"
 weather$Events[weather$Events== "Rain-Snow"] <- "Rain , Snow"
-weather$Events[weather$Events== "Rain-Thunderstorm"] <- "Rain , Thundertorm"
+weather$Events[weather$Events== "Rain-Thunderstorm"] <- "Rain , Thunderstorm"
+weather$Events<-as.factor(weather$Events)
 #--------------merge weatherdata into trips-------
 
 weather$Date<-factor(weather$Date)
 weather$onlyDate <- as.Date(as.POSIXct(weather$Date,format="%m/%d/%Y",tz = "PST8PDT")) #to dates
 trips<-merge(trips,weather, by.y = "onlyDate", by.x = "onlyDate")
+#--------------factorize 
 
 #-------------merge stationcoordinates into trips---------
 #syntax table1$val2 <- table2$val2[match(table1$pid, table2$pid)]
@@ -202,10 +204,20 @@ trips$delta<-(as.numeric(trips$to_lat, digits = 6)-as.numeric(trips$from_lat, di
 trips$direction<-if_else(trips$delta>=0,"North", "South")
 trips$direction<-as.character(trips$direction)
 
+#add summary of weather data frame
+
+weatherSum<-summary(weather$Events)
+weatherSum<-data.frame(Events=names(weatherSum), numberOfDays=weatherSum)
+
+
 
 
 #trips_df$fromStationGroup<-stri_extract(trips$from_station_id, regex='[^-]*')
 trips_df<-tbl_df(trips)
+trips_members<-filter(trips_df, usertype=="Member")
+trips_members_df<-tbl_df(trips_members)
+
+
 
 
 
