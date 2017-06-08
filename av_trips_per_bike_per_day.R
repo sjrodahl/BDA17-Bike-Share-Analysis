@@ -32,13 +32,15 @@ num_unq_bikes_percent <- dplyr::summarise(grpd_bike, unq_bikes = 100*n_distinct(
 yrng <-range(num_unq_bikes_percent$unq_bikes)
 #season_shade <- geom_rect(aes(NULL, NULL, xmin=onlyDate, xmax = onlyDate, fill = season), ymin=yrng[1], ymax=yrng[2], data=trips)
 
-unq_plot<-ggplot(data=num_unq_bikes_percent, aes(x=onlyDate, y=unq_bikes, group=1))+
-  geom_line() +
+unq_plot<-ggplot(data=num_unq_bikes_percent, aes(x=onlyDate, y=unq_bikes, group=1 ))+
+  geom_line(color="#ff990c", size=1) +
+  geom_line(data=num_unq_bikes_percent, size=1, aes(x = onlyDate, y = mean(unq_bikes)),color = "#140cff")+
   scale_x_date("Date") +
-  scale_y_continuous("Percentage of total bike fleet")+
-  ggtitle("Percentage of total bike fleet used per day")
-                 
-unq_plot_shade <- unq_plot+season_shade
+  scale_y_continuous("Percentage of total bike fleet used")+
+  labs(title="Percentage of total bike fleet used per day", subtitle="Blue line shows average of 37.0%")+
+  theme(axis.title = element_text(size=18), axis.text = element_text(size=14, face="bold"), title = element_text(size=22))
+unq_plot
+#unq_plot_shade <- unq_plot+season_shade
 
 grp_bikeid <- group_by(trips, bikeid ) %>% dplyr::summarise(departures=n())
 
