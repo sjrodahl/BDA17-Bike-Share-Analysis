@@ -12,31 +12,341 @@ knitr::opts_chunk$set(echo = TRUE)
 
 ## R Markdown
 ```{r}
+#install gpclib
+#install openStreetMap?
+#install readr
+#install scales
+library(maptools)
+library(RColorBrewer)
+library(classInt)
+library(maps)
+library(OpenStreetMap)
+#----------general distribution plots------
+#setwd("/Users/tormagnusmichaelsen/Documents/BDA/Project/BDA17-Bike-Share-Analysis")
+setwd("D:/Sondre/Dokumenter/UCSD/IRGN452 BigDataAnalytics/Project/BDA17-Bike-Share-Analysis/")
+
+trips<-read.csv("data/trips_processed.csv")
+weather<-read.csv("data/weather_processed2.csv")
+
+#agedistribution over trips
+ p1 <- ggplot(data = trips, aes(x = age)) + geom_histogram(binwidth = 1, color='black',fill='orange') + scale_x_continuous(breaks = seq(15,81,5))
+p1
+
+#----------station plot--------
+stationDistr<-ggplot(data = trips, aes(x = to_station_name)) + geom_bar(color='black',fill='orange') + 
+  theme(axis.text.x = element_text(angle = 60, hjust = 1))
 
 
 
+#------------plots for tripduration--------
+tripDurLogHist<-ggplot(aes(x = tripduration), data = trips) + geom_histogram(color='black',fill='orange') + 
+  scale_x_log10()
+tripDurLogHist
 
+tripDurContHist<-ggplot(aes(x = tripduration), data = trips) + geom_histogram(color='black',fill='orange') + 
+  scale_x_continuous()
+tripDurContHist
 
+tripDurSqrtHist<-ggplot(aes(x = tripduration), data = trips) + geom_histogram(color='black',fill='orange') + 
+  scale_x_sqrt()
 
-
-
-
+tripDurBox<-ggplot(data = trips, aes(x = factor(0), y = tripduration)) + geom_boxplot() + scale_y_continuous(limits = c(0,1000)) + coord_flip()
 
 
 #---------------------------------------------------------------------------------------
 
+#-----------Relations between weather and trips-------
+#need to compare factors in weather$date and 
+#trips$date, and plot number of trips under different weatherconditions, and 
+#only compare weekdays with weekdays and weekends with weekends
 
          
                                                        
 
+tripDurByEventsBox<-ggplot(data = trips, aes(x = Events, y = tripduration)) + geom_boxplot()  #scale_y_continuous(limits = c(0,1500)) + coord_flip()
 
 
+tripsByHour<-ggplot(data = trips, aes(x = sHour)) + 
+  geom_histogram(color='black',fill='orange', binwidth = 1) +
+scale_x_continuous(breaks = seq(0,24,1))
+
+tripsByMinute<-ggplot(data = trips, aes(x = sMinute)) + 
+  geom_histogram(color='black',fill='orange', binwidth = 2) +
+scale_x_continuous(breaks = seq(0,60,5))
+
+tripDurByDay<-ggplot(data = trips, aes(x = sDay, y = )) + geom_boxplot()
 
 
+#-----------Weather-------
+tripsByMinTemp<-ggplot(data = trips, aes(x = Min_TemperatureF)) + 
+  geom_histogram(color='black',fill='orange') +
+scale_x_continuous()
+
+tripsByRainInch<-ggplot(data = trips, aes(x = Precipitation_In)) + 
+  geom_histogram(color='black',fill='orange') +
+scale_x_continuous()
+
+tripsByMeanTemp<-ggplot(data = trips, aes(x = Mean_TemperatureF)) + 
+  geom_histogram(color='black',fill='orange') +
+scale_x_continuous()
+
+#plotting by temperature reveals more trips when its warmer, but migth need to 
+#divide by total days of this temperature? as well as for rainy days, need to divide
+#number of trips on rainy days in total to compare with non-rainy days
+
+# Add ID variable to stations
+stations$ID <- 1:nrow(stations)
+
+#
+# @param origin: station id of origin station
+# @param destination: station id of destination station
+# @return time: time in seconds, distance is in meters
+getGoogleInfo<- function(origin, destination, df){
+  O <- stations$station_id == origin
+  rowIndex <- stations[O, ]$ID
+  D <- stations$station_id == destination
+  columnIndex <- stations[D, ]$ID + 2
+  res <- df[rowIndex, columnIndex]
+  return(res)
+}
 
 
+#-------------Predict number of a usergroup at a given station in a timerange--------
+#first need to create an array with time-intervals, 24hours, factorize
+#then create new variable, and graph by that variable
+
+#could also be intersting to look into when people rent bicycles (after whole hours)
 
 
+#---------Mapping--------
+#-----First need to fix
+
+#install_version("ggplot2", version = "2.1.0", repos = "http://cran.us.r-project.org")
+
+#seattle_coordmap<-get_map(location =  c(-122.38, 47.58,-122.25,47.68),source = "google", maptype = "satellite")
+# doesn't return the right coordinates
+#trying another method:
+
+
+# "terrain", "terrain-background", "satellite",
+#   "roadmap", "hybrid", "toner", "watercolor", "terrain-labels", "terrain-lines",
+#   "toner-2010", "toner-2011", "toner-background", "toner-hybrid",
+#   "toner-labels", "toner-lines", "toner-lite"
+
+lat<-c(47.58, 47.68)
+lon<-c(-122.25, -122.38)
+seattle_impr<-get_map(location = c(lon = mean(lon), lat = mean(lat)), zoom = 13, maptype = "satellite", source = "google")
+
+SumByTripsUnique$alpha<-SumByTripsUnique$departures/(max(SumByTripsUnique$departures))
+
+map_curvedLines<-ggmap(seattle_impr,extent = "normal") + geom_curve(data = SumByTripsUnique, aes(x = from_long,y = from_lat, xend = to_long, yend = to_lat), alpha = SumByTripsUnique$alpha, color = "#bb25f7")  + coord_cartesian()
+
+map_curvedLines
+
+map_straightLines<-ggmap(seattle_impr,extent = "normal") + geom_segment(data = SumByTripsUnique, aes(x = from_long,y = from_lat, xend = to_long, yend = to_lat), alpha = SumByTripsUnique$alpha, color = "red")  + coord_cartesian()
+
+map_straightLines
+
+
+map_fromPoints<-ggmap(seattle_impr) + 
+  geom_point(data = from_stations, 
+             aes(x = from_long,y = from_lat, size = departures, color = fromStationGroup))+
+ggtitle('map over total rentals from stations.png')+
+ggsave('plots/map over total rentals from stations.png')
+
+#map with stations colored after which group the belong, first summarize over groups
+#also check that trips_df is generated already
+DeparturesByStationGroup<-group_by(trips_df, fromStationGroup)
+sumDeparturesByStationGroup<-dplyr::summarize(DeparturesByStationGroup, departures = n())
+
+
+#map with routes
+#first group by pairs of from long and lat
+byTrip<-group_by(trips_df,from_station_id, to_station_id)
+SumByTrip<-dplyr::summarize(byTrip, departures = n())
+#need ti factorize to and from station_id's
+SumByTrip$from_station_id<-as.factor(SumByTrip$from_station_id)
+SumByTrip$to_station_id<-as.factor(SumByTrip$to_station_id)
+
+#need to add station coordinates since summarize removes this
+SumByTrip$from_long<-(stations$long[match(SumByTrip$from_station_id,stations$station_id)])
+SumByTrip$from_lat<-(stations$lat[match(SumByTrip$from_station_id,stations$station_id)])
+
+SumByTrip$to_long<-(stations$long[match(SumByTrip$to_station_id,stations$station_id)])
+SumByTrip$to_lat<-(stations$lat[match(SumByTrip$to_station_id,stations$station_id)])
+
+SumByTripsUnique <- SumByTrip[!(SumByTrip$from_station_id==SumByTrip$to_station_id),]
+
+map_routes<-ggmap(seattle_impr)+
+geom_point(data = stations,
+              aes(x =long, y = lat),
+            colour = "orange",
+              alpha =0.7) +
+  geom_curve(data = SumByTrip,
+              aes(x = from_long,y = from_lat, xend = to_long, yend = to_lat, size = departures), 
+              color = "white") +
+   coord_cartesian()+
+ ggtitle('linesegment over trips.png')+
+
+route(from, to, mode = c("driving", "walking", "bicycling", "transit"),
+  structure = c("legs", "route"), output = c("simple", "all"),
+  alternatives = FALSE, messaging = FALSE, sensor = FALSE,
+  override_limit = FALSE)
+
+#lineplot over trips by day and time
+hourly <- group_by(trips_df, sHour, sDay)
+daily <- group_by(trips_df,sDay,sHour)
+
+per_hour<- dplyr::summarize(hourly, departures = n())
+per_day<-dplyr::summarize(daily,departures = n())
+
+#fixed bug x-ticks not showing by factorizing sHour
+hourlyPlot<-ggplot(hourly, aes(x = as.factor(sHour), y = departures , colour = sDay)) +
+     geom_point(data = per_hour, aes(group = sDay)) +
+     geom_line(data = per_hour, aes(group = sDay)) +
+     scale_x_discrete() +
+     scale_y_continuous(breaks = seq(0,900,100))+
+     xlab('Hour')+
+     ylab('rentals')+
+    ggtitle('Hourly trips across days')+
+     theme_minimal()+
+ggsave("plots/Hourly trips across days.png")
+
+
+#pick-up times by agegroups
+StartByAgeGroup<- group_by(trips_df, sHour, Agecat1)
+
+SumStartByAgeGroup <- dplyr::summarize(StartByAgeGroup,rentals = n())
+#bug fixed: grouping by agecat1 and then sHour doesn't produce correct plot
+hourlyStartByAge<-ggplot(StartByAgeGroup, aes(x=as.factor(sHour), y = rentals, colour = Agecat1, group = Agecat1))+
+     geom_point(data = SumStartByAgeGroup, aes(group = Agecat1)) +
+     geom_line(data = SumStartByAgeGroup, aes(group = Agecat1)) +
+     scale_x_discrete() +
+     #scale_y_continuous(breaks = seq(0,900,100))+
+     xlab('Hour')+
+     ylab('rentals')+
+     ggtitle('Hourly trips across agegroups')+
+     theme_minimal()+
+ggsave("plots/Hourly trips across agegroups.png")
+
+EndByAgeGroup<- group_by(trips_df, sHour, Agecat1)
+
+SumEndByAgeGroup <- dplyr::summarize(EndByAgeGroup,rentals = n())
+#bug fixed: grouping by agecat1 and then sHour doesn't produce correct plot
+hourlyEndByAge<-ggplot(EndByAgeGroup, aes(x=as.factor(sHour), y = rentals, colour = Agecat1, group = Agecat1))+
+     geom_point(data = SumEndByAgeGroup, aes(group = Agecat1)) +
+     geom_line(data = SumEndByAgeGroup, aes(group = Agecat1)) +
+     scale_x_discrete() +
+     #scale_y_continuous(breaks = seq(0,900,100))+
+     xlab('Hour')+
+     ylab('rentals')
+     
+     #theme_minimal()
+
+
+#plot over pickup times for member
+ByUserType <- group_by(trips_df,sHour, usertype) #%>% filter(!is.na(usertype))
+SumByUserType<-dplyr::summarize(ByUserType,rentals = n())
+
+UserTypePlot<-ggplot(ByUserType, aes(x = as.factor(sHour), y = rentals, colour = usertype))+
+  geom_line(data = SumByUserType, aes(group = usertype))+
+  geom_point(data = SumByUserType, aes(group = usertype)) +
+  scale_x_discrete()+
+  scale_y_continuous(breaks = seq(0,4000,200))+
+  xlab('Hour')+
+  ylab('rentals')+
+  theme_minimal() +
+ggtitle('Hourly trips across usertype')+
+ggsave("plots/Hourly trips across usertype.png")
+
+#plot over timediff vs userage and times, might be most reasonable to use mean of timediff
+
+TimeDiffVsAge <- group_by(trips_df,sHour, Agecat1) #%>% filter(!is.na(usertype))
+SumByTimeAge<-dplyr::summarize(TimeDiffVsAge, mean = mean(timeDiff))
+
+TimeDiffByAgePlot<-ggplot(TimeDiffVsAge, aes(x = as.factor(sHour), y = mean, colour = Agecat1))+
+  geom_line(data = SumByTimeAge, aes(group = Agecat1))+
+  geom_point(data = SumByTimeAge, aes(group = Agecat1)) +
+  scale_x_discrete()+
+  xlab('Hour')+
+  ylab('mean of timediff')+
+  theme_minimal() +
+  ggtitle('Time differences between estimates and actual time by agecategories')+
+ggsave("plots/Time differences by agecategories.png")
+
+#Plot over timediff vs usertype and times
+TimeDiffVsUser<- group_by(trips_df, sHour, usertype)
+SumByTimeUser<- dplyr::summarize(TimeDiffVsUser, median = median(timeDiff))
+ByTimeUserPlot<- ggplot(TimeDiffVsUser, aes(x = as.factor(sHour), y = median, colour = usertype))+
+  geom_line(data = SumByTimeUser, aes(group = usertype))+
+  geom_point(data = SumByTimeUser, aes(group = usertype))+
+  scale_x_discrete()+
+   xlab('Hour')+
+  ylab('median of timediff')+
+  theme_minimal() +
+  ggtitle('Time differences by usertypes')+
+ggsave("plots/Time differences by usertypes.png")
+
+trips_members<-filter(trips_df, usertype=="Member")
+TimeDiffMemberWeather<-group_by(trips_members, sHour, Events)
+DiffMeanMemberByWeather<-dplyr::summarize(TimeDiffVsWeather, mean = mean(timeDiff))
+MemberVsWeather<-ggplot(TimeDiffVsWeather, aes(x = as.factor(sHour), y = mean, colour = Events))+
+   geom_line(data = DiffMeanByWeather, aes(group = Events))+
+  geom_point(data = DiffMeanByWeather, aes(group = Events))+
+  scale_x_discrete()+
+   xlab('Hour')+
+  ylab('mean of timediff')+
+  theme_minimal()+
+  ggtitle('time differences for members by weather')+
+ggsave("plots/Time differences for members by weather.png")
+
+trips_nonMembers<-filter(trips_df, usertype=="Short-Term Pass Holder")
+TimeDiffNonMemberVsWeather<-group_by(trips_nonMembers, sHour, Events)
+DiffMeanNonMemberByWeather<-dplyr::summarize(TimeDiffNonMemberVsWeather, mean = mean(timeDiff))
+NonMemberVsWeather<-ggplot(TimeDiffNonMemberVsWeather, aes(x = as.factor(sHour), y = mean, colour = Events))+
+   geom_line(data = DiffMeanNonMemberByWeather, aes(group = Events))+
+  geom_point(data = DiffMeanNonMemberByWeather, aes(group = Events))+
+  scale_x_discrete()+
+   xlab('Hour')+
+  ylab('mean of timediff')+
+  theme_minimal()+
+  ggtitle('time differences for members by weather')+
+ggsave("plots/Time differences for members by weather.png")
+
+numbers <- seq(from=0, to=0.2, by=0.01)
+rands<-sample(numbers, size=1653, replace=TRUE)
+tripcombs$rand<-rands
+#tripcombs$rand<-as.factor(tripcombs$rand)
+
+
+#plotting routes in map
+# routes<-route(SumByTripsUnique$from_station, SumByTripsUnique$to_station, mode = "bicycling", structure = "route")
+
+SumByTripsUnique$fromCoords <- paste(SumByTripsUnique$from_lat,SumByTripsUnique$from_long, sep = "+")
+
+SumByTripsUnique$toCoords <- paste(SumByTripsUnique$to_lat,SumByTripsUnique$to_long, sep = "+")
+
+numroutes <-20
+routes<-lapply(1:numroutes,
+       function(x) {
+           Sys.sleep(0.5)
+           ggmap::route(from = SumByTripsUnique$fromCoords[[x]],
+                         to = SumByTripsUnique$toCoords[[x]],
+                         mode = "bicycling",
+                         output = "all")
+           } ) 
+
+routeMap <- ggmap(seattle_impr)
+
+for (x in 1:numroutes){
+  r <- geom_leg(data=routes,aes(
+    x = startLon, xend = endLon,
+    y = startLat, yend = endLat,
+    color = "red"
+  ))
+  routeMap<-routeMap+r
+}
+routeMap
 
 ```
 

@@ -57,3 +57,4 @@ map_fromPoints<-ggmap(seattle_impr) +
   scale_color_manual(labels = c(">400 m (1300 ft) away", "<=400m (1300ft) away"), values = c("blue", "orange"))+
   theme(axis.title = element_text(size=18), axis.text = element_text(size=14, face="bold"), title = element_text(size=22), legend.text = element_text(size=14))
 
+map_fromPoints
