@@ -17,6 +17,11 @@ trips<-read.csv("data/trip.csv", stringsAsFactors = FALSE, sep = ";") #Set nrows
 weather<-read.csv("data/weather.csv")
 stations<-read.csv("data/station.csv")
 
+#Fix date formatting:
+trips_dates_fixed <- read.csv("data/trip_dates.csv", sep=";")
+trips$starttime<-trips_dates_fixed$starttime
+trips$stoptime<-trips_dates_fixed$stoptime
+
 distance.matrix <- read.csv("gmapsData/gmapsDistMatrix.csv")
 time.matrix <- read.csv("gmapsData/gmapsTimeMatrix.csv")
 
