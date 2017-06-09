@@ -53,12 +53,15 @@ tripDurSqrtHist<-ggplot(aes(x = tripduration), data = trips) + geom_histogram(co
 tripDurBox<-ggplot(data = trips, aes(x = factor(0), y = tripduration)) + geom_boxplot() + scale_y_continuous(limits = c(0,1000)) + coord_flip()
 
 
+#---------------------------------------------------------------------------------------
 
 #-----------Relations between weather and trips-------
 #need to compare factors in weather$date and 
 #trips$date, and plot number of trips under different weatherconditions, and 
 #only compare weekdays with weekdays and weekends with weekends
 
+         
+                                                       
 
 tripDurByEventsBox<-ggplot(data = trips, aes(x = Events, y = tripduration)) + geom_boxplot()  #scale_y_continuous(limits = c(0,1500)) + coord_flip()
 

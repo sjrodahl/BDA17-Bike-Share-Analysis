@@ -54,6 +54,7 @@ map_fromPoints<-ggmap(seattle_impr) +
   geom_point(data = stations, 
              aes(x = long,y = lat, size = nDepartures$departures, color = isClose)) +
   labs(title = "Station departures categorized by neighbor vincinity\n", color = "Nearest neighboring station is:\n", size = "Number of departures:\n")+
-  scale_color_manual(labels = c("<=400 m (1300 ft) away", ">400m (1300ft) away"), values = c("red", "blue"))
+  scale_color_manual(labels = c(">400 m (1300 ft) away", "<=400m (1300ft) away"), values = c("blue", "orange"))+
+  theme(axis.title = element_text(size=18), axis.text = element_text(size=14, face="bold"), title = element_text(size=22), legend.text = element_text(size=14))
 
 map_fromPoints
