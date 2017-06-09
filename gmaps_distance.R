@@ -18,10 +18,10 @@ stations.coordinates.top3 <-head(stations.coordinates, 3)
 
 
 #### Distance matrix returns a list of 3 data frames: Time (in seconds), Distance (in meters) and Status ("OK")
-distance.matrix.coord <- gmapsdistance(origin = stations.coordinates.top3,
-                                 destination = stations.coordinates.top3,
+distance.matrix.walk.coord <- gmapsdistance(origin = stations.coordinates,
+                                 destination = stations.coordinates,
                                  key= gmapsKey,
-                                 mode="bicycling")
+                                 mode="walking")
 
 
 #Write csv-file
