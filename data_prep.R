@@ -213,15 +213,9 @@ weatherSum<-data.frame(Events=names(weatherSum), numberOfDays=weatherSum)
 
 
 #trips_df$fromStationGroup<-stri_extract(trips$from_station_id, regex='[^-]*')
-trips_df<-tbl_df(trips)
-trips_members<-filter(trips_df, usertype=="Member")
-trips_members_df<-tbl_df(trips_members)
 
 
-
-
-
-
+write.csv(weatherSum,"data/weatherSum.csv")
 write.csv(trips, "data/trips_processed.csv")
 write.csv(weather, "data/weather_processed2.csv")
 

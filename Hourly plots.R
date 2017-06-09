@@ -1,5 +1,14 @@
 
+setwd("/Users/tormagnusmichaelsen/Documents/BDA/Project/BDA17-Bike-Share-Analysis")
 
+trips<-read.csv("data/trips_processed.csv", stringsAsFactors = FALSE, sep = ",") #Set nrows for testing purposes
+weather<-read.csv("data/weather_processed2.csv")
+stations<-read.csv("data/station.csv")
+weatherSum<-read.csv("data/weatherSum.csv")
+
+trips_df<-tbl_df(trips)
+trips_members<-filter(trips_df, usertype=="Member")
+trips_members_df<-tbl_df(trips_members)
 
 #-------------------------------------hourly trips------------------------------
 #lineplot over trips by day and time, average over number of days
@@ -10,7 +19,7 @@ per_hour<- dplyr::summarize(hourly, departures = n())
 #per_day<-dplyr::summarize(daily,departures = n())
 
 #fixed bug x-ticks not showing by factorizing sHour
-hourlyPlot<-ggplot(hourly, aes(x = as.factor(sHour), y = departures/425 , colour = sDay)) +
+hourlyPlot<-ggplot(hourly, aes(x = as.factor(sHour), y = departures, colour = sDay)) +
   geom_point(data = per_hour, aes(group = sDay)) +
   geom_line(data = per_hour, aes(group = sDay)) +
   scale_x_discrete() +
@@ -18,7 +27,9 @@ hourlyPlot<-ggplot(hourly, aes(x = as.factor(sHour), y = departures/425 , colour
   xlab('Hour')+
   ylab('rentals')+
   ggtitle('Hourly trips across days')+
-  theme_minimal()+
+  theme(axis.title = element_text(size=18), 
+        axis.text = element_text(size=14, face="bold"), 
+        title = element_text(size=22))+
   ggsave("plots/Hourly trips across days.png")
 
 
@@ -29,6 +40,8 @@ SumStartByAgeGroup <- dplyr::summarize(StartByAgeGroup,rentals = n())
 
 #bug fixed: grouping by agecat1 and then sHour doesn't produce correct plot
 #plot
+tiff('test.tiff', units="in", width=20, height=20, res=300)
+
 hourlyStartByAge<-ggplot(StartByAgeGroup, aes(x=as.factor(sHour), y = rentals, colour = Agecat1, group = Agecat1))+
   geom_point(data = SumStartByAgeGroup, aes(group = Agecat1)) +
   geom_line(data = SumStartByAgeGroup, aes(group = Agecat1)) +
@@ -37,8 +50,11 @@ hourlyStartByAge<-ggplot(StartByAgeGroup, aes(x=as.factor(sHour), y = rentals, c
   xlab('Hour')+
   ylab('rentals')+
   ggtitle('Hourly trips across agegroups')+
-  theme_minimal()+
+  theme(axis.title = element_text(size=18), 
+        axis.text = element_text(size=14, face="bold"), 
+        title = element_text(size=22))+
   ggsave("plots/Hourly trips across agegroups.png")
+dev.off()
 
 
 #hourly trips by members
@@ -53,7 +69,9 @@ UserTypePlot<-ggplot(ByUserType, aes(x = as.factor(sHour), y = rentals, colour =
   scale_y_continuous()+
   xlab('Hour')+
   ylab('rentals')+
-  theme_minimal() +
+  theme(axis.title = element_text(size=18), 
+        axis.text = element_text(size=14, face="bold"), 
+        title = element_text(size=22))+
   ggtitle('Hourly trips across usertype')+
   ggsave("plots/Hourly trips across usertype.png")
 
@@ -71,7 +89,9 @@ SeasonPlot<-ggplot(BySeason, aes(x = as.factor(sHour), y = rentals, colour = sea
   scale_y_continuous()+
   xlab('Hour')+
   ylab('rentals')+
-  theme_minimal() +
+  theme(axis.title = element_text(size=18), 
+        axis.text = element_text(size=14, face="bold"), 
+        title = element_text(size=22))+
   ggtitle('Hourly trips across seasons')+
   ggsave("plots/Hourly trips across season.png")
 
@@ -91,13 +111,15 @@ hourlyPlotMemberByWeather<-ggplot(hourlyMemberByWeather, aes(x = as.factor(sHour
   scale_y_continuous()+
   xlab('Hour')+
   ylab('rentals')+
-  theme_minimal() +
-  ggtitle('Hourly trips across usertype in different weather, averaged')+
+  theme(axis.title = element_text(size=18), 
+        axis.text = element_text(size=14, face="bold"), 
+        title = element_text(size=22)) +
+  ggtitle('Hourly trips for members, in different weather, averaged')+
   ggsave("plots/Hourly trips across usertype, averaged over weather.png")
 
 
 
-
+#!!!!!!!!!!! plot this over different agegroups to see if there's any
 
 #-------------------------------------timedifferences-------------------------------------
 #plot over timediff vs userage and times, might be most reasonable to use mean of timediff?
@@ -111,7 +133,9 @@ TimeDiffByAgePlot<-ggplot(TimeDiffVsAge, aes(x = as.factor(sHour), y = mean, col
   scale_x_discrete()+
   xlab('Hour')+
   ylab('mean of timediff')+
-  theme_minimal() +
+  theme(axis.title = element_text(size=18), 
+        axis.text = element_text(size=14, face="bold"), 
+        title = element_text(size=22))+
   ggtitle('Time differences between estimates and actual time by agecategories')+
   ggsave("plots/Time differences by agecategories.png")
 
@@ -127,7 +151,9 @@ ByTimeUserPlot<- ggplot(TimeDiffVsUser, aes(x = as.factor(sHour), y = median, co
   scale_x_discrete()+
   xlab('Hour')+
   ylab('median of timediff')+
-  theme_minimal() +
+  theme(axis.title = element_text(size=18), 
+        axis.text = element_text(size=14, face="bold"), 
+        title = element_text(size=22))+
   ggtitle('Time differences by usertypes')+
   ggsave("plots/Time differences by usertypes.png")
 

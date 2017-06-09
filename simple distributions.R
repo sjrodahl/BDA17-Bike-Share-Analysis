@@ -9,11 +9,11 @@ stationDistr<-ggplot(data = trips, aes(x = to_station_name)) + geom_bar(color='b
 
 
 #------------plots for tripduration--------
-tripDurLogHist<-ggplot(aes(x = tripduration), data = trips) + geom_histogram(color='black',fill='orange') + 
+tripDurLogHist<-ggplot(aes(x = tripduration/60), data = trips) + geom_histogram(color='black',fill='orange') + 
   scale_x_log10()
 tripDurLogHist
 
-tripDurContHist<-ggplot(aes(x = tripduration), data = trips) + geom_histogram(color='black',fill='orange') + 
+tripDurContHist<-ggplot(aes(x = tripduration/60), data = trips) + geom_histogram(color='black',fill='orange') + 
   scale_x_continuous()
 tripDurContHist
 
