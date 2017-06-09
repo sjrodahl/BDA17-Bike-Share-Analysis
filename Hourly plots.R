@@ -40,7 +40,7 @@ SumStartByAgeGroup <- dplyr::summarize(StartByAgeGroup,rentals = n())
 
 #bug fixed: grouping by agecat1 and then sHour doesn't produce correct plot
 #plot
-tiff('test.tiff', units="in", width=20, height=20, res=300)
+tiff('test.tiff', units="in", width=20, height=20, res=200)
 
 hourlyStartByAge<-ggplot(StartByAgeGroup, aes(x=as.factor(sHour), y = rentals, colour = Agecat1, group = Agecat1))+
   geom_point(data = SumStartByAgeGroup, aes(group = Agecat1)) +

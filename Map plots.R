@@ -7,7 +7,6 @@ stations<-read.csv("data/station.csv")
 trips_df<-tbl_df(trips)
 trips_members<-filter(trips_df, usertype=="Member")
 trips_members_df<-tbl_df(trips_members)
-
 #--------------------define map--------------------
 #package needed #install_version
 #("ggplot2", version = "2.1.0", repos = "http://cran.us.r-project.org")
