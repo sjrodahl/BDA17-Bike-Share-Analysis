@@ -11,7 +11,10 @@ library(chron)
 library(plyr)
 library(hydroTSM)
 library(data.table)
-
+library(ggthemes)
+library(scales)
+#install forcats
+library(forcats)
 
 #Comment out the other user.
 #setwd("/Users/tormagnusmichaelsen/Documents/BDA/Project/BDA17-Bike-Share-Analysis")
@@ -214,7 +217,8 @@ trips$direction<-as.character(trips$direction)
 weatherSum<-summary(weather$Events)
 weatherSum<-data.frame(Events=names(weatherSum), numberOfDays=weatherSum)
 
-
+#factorize month
+trips$sMonth<-as.factor(trips$sMonth)
 
 
 #trips_df$fromStationGroup<-stri_extract(trips$from_station_id, regex='[^-]*')

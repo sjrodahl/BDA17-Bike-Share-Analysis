@@ -6,12 +6,16 @@ weather<-read.csv("data/weather_processed2.csv")
 stations<-read.csv("data/station.csv")
 weatherSum<-read.csv("data/weatherSum.csv")
 
+trips$sDay<-factor(trips$sDay, levels=c('Mon', 'Tues', 'Wed', 'Thurs', 'Fri', 'Sat', 'Sun'))
+
 trips_df<-tbl_df(trips)
 trips_members<-filter(trips_df, usertype=="Member")
 trips_members_df<-tbl_df(trips_members)
 
+
 #-------------------------------------hourly trips------------------------------
 #lineplot over trips by day and time, average over number of days
+trips$sDay<-factor(trips$sDay, levels=c('Mon', 'Tues', 'Wed', 'Thurs', 'Fri', 'Sat', 'Sun'))
 hourly <- group_by(trips_df, sHour, sDay)
 #daily <- group_by(trips_df,sDay,sHour)
 
@@ -19,20 +23,49 @@ per_hour<- dplyr::summarize(hourly, departures = n())
 #per_day<-dplyr::summarize(daily,departures = n())
 
 #fixed bug x-ticks not showing by factorizing sHour
-hourlyPlot<-ggplot(hourly, aes(x = as.factor(sHour), y = departures, colour = sDay)) +
+#also factorize sDay
+
+hourlyPlot<-ggplot(hourly, aes(x = as.factor(sHour), y = departures, colour = sDay), ordered = TRUE) +
   geom_point(data = per_hour, aes(group = sDay)) +
   geom_line(data = per_hour, aes(group = sDay)) +
+  theme_hc(bgcolor = "darkunica") +
+  scale_colour_hc("darkunica")+
   scale_x_discrete() +
-  scale_y_continuous()+
+  scale_y_continuous(breaks = seq(0,5000,500))+
   xlab('Hour')+
-  ylab('rentals')+
+  ylab('Trips')+
   ggtitle('Hourly trips across days')+
-  theme(axis.title = element_text(size=18), 
-        axis.text = element_text(size=14, face="bold"), 
-        title = element_text(size=22))+
+  theme(axis.title = element_text(size=14), 
+        axis.text = element_text(size=10, face="bold"), 
+        title = element_text(size=16, vjust = 0.5))+
   ggsave("plots/Hourly trips across days.png")
 
+#------------hourly trips in weekdays and weekends separated, by agegroups------------------------------
 
+ageHourly <- group_by(trips_df[trips_df$weekday==TRUE,], sHour, Agecat1)
+#daily <- group_by(trips_df,sDay,sHour)
+
+per_ageHourly<- dplyr::summarize(ageHourly, departures = n())
+#per_day<-dplyr::summarize(daily,departures = n())
+
+#fixed bug x-ticks not showing by factorizing sHour
+#also factorize sDay
+
+weekPlot<-ggplot(ageHourly, aes(x = as.factor(sHour), y = departures, colour = Agecat1), ordered = TRUE) +
+  geom_point(data = per_ageHourly, aes(group = Agecat1)) +
+  geom_line(data = per_ageHourly, aes(group = Agecat1)) +
+  theme_hc(bgcolor = "darkunica") +
+  scale_colour_hc("darkunica")+
+  scale_x_discrete() +
+  scale_y_continuous(breaks = seq(0,20000,2000))+
+  xlab('Hour')+
+  ylab('Trips')+
+  ggtitle('Hourly trips by age, by members, mon-fri')+
+  theme(axis.title = element_text(size=14), 
+        axis.text = element_text(size=10, face="bold"), 
+        title = element_text(size=14, vjust = 0.5))+
+  ggsave("plots/Hourly_by_age.png")
+#---------------------------------------------
 #hourly trips by agegroups
 #dataprep
 StartByAgeGroup<- group_by(trips_df, sHour, Agecat1)
@@ -40,15 +73,17 @@ SumStartByAgeGroup <- dplyr::summarize(StartByAgeGroup,rentals = n())
 
 #bug fixed: grouping by agecat1 and then sHour doesn't produce correct plot
 #plot
-tiff('test.tiff', units="in", width=20, height=20, res=300)
 
 hourlyStartByAge<-ggplot(StartByAgeGroup, aes(x=as.factor(sHour), y = rentals, colour = Agecat1, group = Agecat1))+
   geom_point(data = SumStartByAgeGroup, aes(group = Agecat1)) +
   geom_line(data = SumStartByAgeGroup, aes(group = Agecat1)) +
+  theme_hc(bgcolor = "darkunica") +
+  scale_colour_hc("darkunica")+
   scale_x_discrete() +
-  scale_y_continuous()+
+  scale_y_continuous(breaks = seq(0,20000,2000))+
   xlab('Hour')+
-  ylab('rentals')+
+  ylab('Trips')+
+
   ggtitle('Hourly trips across agegroups')+
   theme(axis.title = element_text(size=18), 
         axis.text = element_text(size=14, face="bold"), 
