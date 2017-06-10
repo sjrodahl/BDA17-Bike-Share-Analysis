@@ -88,10 +88,42 @@ for(i in 2:nrow(pine_trips_2015_10_20)){
 }
 
 ggplot(data = pine_trips_2015_10_20, aes(x=ID, y = cumulative)) + 
-  geom_line(stat="identity", aes(group=1), size = 2)+
+  geom_line(stat="identity", aes(group=1), size = 2, color = "#ff9e30")+
   labs(title="Bike movement from E Pine St & 16th Ave", subtitle= "On 20th of October, 2015", x="Tripnumber", y ="Bike number difference since start of day")+
   theme(axis.title = element_text(size=18), 
         axis.text = element_text(size=14, face="bold"), 
         title = element_text(size=22))+
   theme_hc(bgcolor = "darkunica") +
   scale_colour_hc("darkunica")
+
+
+# Case study: Pier 69 / Alaskan Way & Clay St
+pier69 <- trips[trips$from_station_name == "Pier 69 / Alaskan Way & Clay St" | trips$to_station_name== "Pier 69 / Alaskan Way & Clay St",]
+pier69_departing <- pier69[pier69$from_station_name == "Pier 69 / Alaskan Way & Clay St", ]
+pier69$usertype<-as.factor(pier69$usertype)
+pier69_members <- pier69[pier69$usertype=="Member",]
+pier69_nonMembers <- pier69[pier69$usertype!="Member",]
+
+#Group by month in 2015
+pier69_memb_byMonth <- pier69_members[pier69_members$sYear==2015,] %>%  group_by(sMonth) %>% dplyr::summarise(numTrips = n())
+pier69_nonMemb_byMonth <- pier69_nonMembers[pier69_nonMembers$sYear==2015,] %>% group_by(sMonth) %>% dplyr::summarise(numTrips = n())
+
+pier69_memb_byMonth$sMonth<-factor(pier69_memb_byMonth$sMonth, levels = c("Jan", "Feb", "Mar","Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"))
+pier69_nonMemb_byMonth$sMonth<-factor(pier69_nonMemb_byMonth$sMonth, levels = c("Jan", "Feb", "Mar","Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"))
+pier69_byMonth_combined <- rbind(pier69_memb_byMonth, pier69_nonMemb_byMonth)
+pier69_byMonth_combined$usertype <-rep(factor(1:2), times=c(nrow(pier69_memb_byMonth), nrow(pier69_nonMemb_byMonth)))
+
+
+
+ggplot() + 
+  geom_line(data=pier69_memb_byMonth, group=1, stat="identity", aes(x=sMonth, y=numTrips, color = "Members"), size = 2)+
+  geom_line(data=pier69_nonMemb_byMonth, group=1, stat="identity", aes(x=sMonth, y=numTrips, color = "Short-Term Pass Holders"), size = 2)+
+  labs(title="Trips by usertype to and from Pier 69 / Alaskan Way & Clay St", subtitle= "For trips in 2015", x="Month", y ="Bike trips")+
+  theme(axis.title = element_text(size=18), 
+        axis.text = element_text(size=14, face="bold"), 
+        title = element_text(size=22), legend.text = element_text(size=14))+
+  theme_hc(bgcolor = "darkunica") +
+  scale_colour_hc("darkunica")
+
+
+
