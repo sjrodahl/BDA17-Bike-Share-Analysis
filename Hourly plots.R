@@ -14,7 +14,7 @@ trips_members_df<-tbl_df(trips_members)
 
 
 #-------------------------------------hourly trips------------------------------
-#lineplot over trips by day and time, average over number of days
+#lineplot over trips by day and time
 trips$sDay<-factor(trips$sDay, levels=c('Mon', 'Tues', 'Wed', 'Thurs', 'Fri', 'Sat', 'Sun'))
 hourly <- group_by(trips_df, sHour, sDay)
 #daily <- group_by(trips_df,sDay,sHour)
@@ -65,6 +65,60 @@ weekPlot<-ggplot(ageHourly, aes(x = as.factor(sHour), y = departures, colour = A
         axis.text = element_text(size=10, face="bold"), 
         title = element_text(size=14, vjust = 0.5))+
   ggsave("plots/Hourly_by_age.png")
+
+
+#-----------------------------hourly trips in weekends, across agegroups-----------
+ageHourlyWeekend <- group_by(trips_df[trips_df$weekday==FALSE,], sHour, Agecat1)
+#daily <- group_by(trips_df,sDay,sHour)
+
+per_ageHourlyWeekend<- dplyr::summarize(ageHourlyWeekend, departures = n())
+#per_day<-dplyr::summarize(daily,departures = n())
+
+#fixed bug x-ticks not showing by factorizing sHour
+#also factorize sDay
+
+weekPlot<-ggplot(ageHourlyWeekend, aes(x = as.factor(sHour), y = departures, colour = Agecat1), ordered = TRUE) +
+  geom_point(data = per_ageHourlyWeekend, aes(group = Agecat1)) +
+  geom_line(data = per_ageHourlyWeekend, aes(group = Agecat1)) +
+  theme_hc(bgcolor = "darkunica") +
+  scale_colour_hc("darkunica")+
+  scale_x_discrete() +
+  scale_y_continuous(limits = c(0,1800), breaks = seq(0,1800,200))+
+  xlab('Hour')+
+  ylab('Trips')+
+  ggtitle('Hourly trips by age, by members, weekends')+
+  theme(axis.title = element_text(size=14), 
+        axis.text = element_text(size=10, face="bold"), 
+        title = element_text(size=14))+
+  ggsave("plots/Hourly_by_age_weekend.png")
+
+#------------------------hourly across week, only members--------------------
+MemberHourlyWeek <- group_by(filter(trips_df, usertype=="Member"), sHour, sDay)
+#daily <- group_by(trips_df,sDay,sHour)
+
+per_ageMemberHourlyWeek<- dplyr::summarize(MemberHourlyWeek, departures = n())
+#per_day<-dplyr::summarize(daily,departures = n())
+
+#fixed bug x-ticks not showing by factorizing sHour
+#also factorize sDay
+
+weekPlot<-ggplot(MemberHourlyWeek, aes(x = as.factor(sHour), y = departures, colour = sDay), ordered = TRUE) +
+  geom_point(data = per_ageMemberHourlyWeek, aes(group = sDay)) +
+  geom_line(data = per_ageMemberHourlyWeek, aes(group = sDay)) +
+  theme_hc(bgcolor = "darkunica") +
+  scale_colour_hc("darkunica")+
+  scale_x_discrete() +
+  scale_y_continuous(limits = c(0,4000), breaks = seq(0,4000,500))+
+  xlab('Hour')+
+  ylab('Trips')+
+  ggtitle('Hourly trips by day, members ')+
+  theme(axis.title = element_text(size=14), 
+        axis.text = element_text(size=10, face="bold"), 
+        title = element_text(size=14))+
+  ggsave("plots/Hourly_by_day_member.png")
+
+
+
 #---------------------------------------------
 #hourly trips by agegroups
 #dataprep
@@ -89,10 +143,10 @@ hourlyStartByAge<-ggplot(StartByAgeGroup, aes(x=as.factor(sHour), y = rentals, c
         axis.text = element_text(size=14, face="bold"), 
         title = element_text(size=22))+
   ggsave("plots/Hourly trips across agegroups.png")
-dev.off()
 
 
-#hourly trips by members
+#------------------------Usertype-----------------
+#hourly trips by usertype
 #dataprep
 ByUserType <- group_by(trips_df,sHour, usertype) #%>% filter(!is.na(usertype))
 SumByUserType<-dplyr::summarize(ByUserType,rentals = n())
@@ -100,17 +154,19 @@ SumByUserType<-dplyr::summarize(ByUserType,rentals = n())
 UserTypePlot<-ggplot(ByUserType, aes(x = as.factor(sHour), y = rentals, colour = usertype))+
   geom_line(data = SumByUserType, aes(group = usertype))+
   geom_point(data = SumByUserType, aes(group = usertype)) +
+  theme_hc(bgcolor = "darkunica") +
+  scale_colour_hc("darkunica")+
   scale_x_discrete()+
-  scale_y_continuous()+
+  scale_y_continuous(limits = c(0,20000), breaks = seq(0,20000,2000))+
   xlab('Hour')+
   ylab('rentals')+
-  theme(axis.title = element_text(size=18), 
-        axis.text = element_text(size=14, face="bold"), 
-        title = element_text(size=22))+
+  theme(axis.title = element_text(size=14), 
+        axis.text = element_text(size=8, face="bold"), 
+        title = element_text(size=14, vjust = 0.5))+
   ggtitle('Hourly trips across usertype')+
-  ggsave("plots/Hourly trips across usertype.png")
+  ggsave("plots/Hourly_across_usertype.png")
 
-
+#----------------------hourly trips by season----------------------
 
 #hourly trips by season
 #dataprep
@@ -130,7 +186,7 @@ SeasonPlot<-ggplot(BySeason, aes(x = as.factor(sHour), y = rentals, colour = sea
   ggtitle('Hourly trips across seasons')+
   ggsave("plots/Hourly trips across season.png")
 
-
+#----------------------Weather----------------------
 #hourly trips by members by weather, normalized to number of days with each type of weather
 #notes: 
 #dataprep
@@ -154,7 +210,7 @@ hourlyPlotMemberByWeather<-ggplot(hourlyMemberByWeather, aes(x = as.factor(sHour
 
 
 
-#!!!!!!!!!!! plot this over different agegroups to see if there's any
+#!!!!!!!!!!! plot this over different agegroups to see if there's any difference?
 
 #-------------------------------------timedifferences-------------------------------------
 #plot over timediff vs userage and times, might be most reasonable to use mean of timediff?
@@ -174,23 +230,74 @@ TimeDiffByAgePlot<-ggplot(TimeDiffVsAge, aes(x = as.factor(sHour), y = mean, col
   ggtitle('Time differences between estimates and actual time by agecategories')+
   ggsave("plots/Time differences by agecategories.png")
 
+#-------------------------------------Usertype-------------------------------------
 
 #Plot over timediff vs usertype and times
 #dataprep
 TimeDiffVsUser<- group_by(trips_df, sHour, usertype)
 SumByTimeUser<- dplyr::summarize(TimeDiffVsUser, median = median(timeDiff))
 #plot
-ByTimeUserPlot<- ggplot(TimeDiffVsUser, aes(x = as.factor(sHour), y = median, colour = usertype))+
+ByTimeUserPlot<- ggplot(TimeDiffVsUser, aes(x = as.factor(sHour), y = median/60, colour = usertype))+
   geom_line(data = SumByTimeUser, aes(group = usertype))+
   geom_point(data = SumByTimeUser, aes(group = usertype))+
+  theme_hc(bgcolor = "darkunica") +
+  scale_colour_hc("darkunica")+
   scale_x_discrete()+
+  scale_y_continuous(limits = c(-6,14), breaks = seq(-6,14,2))+
   xlab('Hour')+
-  ylab('median of timediff')+
-  theme(axis.title = element_text(size=18), 
-        axis.text = element_text(size=14, face="bold"), 
-        title = element_text(size=22))+
-  ggtitle('Time differences by usertypes')+
-  ggsave("plots/Time differences by usertypes.png")
+  ylab('Timedifference')+
+  theme(axis.title = element_text(size=14), 
+        axis.text = element_text(size=8, face="bold"), 
+        title = element_text(size=14))+
+  ggtitle('Time difference by usertypes')+
+  ggsave("plots/Time_diff_by_usertype.png")
+
+#-------------------------------------Day of the week, member-------------------------------------
+#Plot over timediff vs day and times, member
+#dataprep
+TimeDiffVsDayM<- group_by(filter(trips_df,usertype=="Member"), sHour, weekday)
+SumByTimeDayM<- dplyr::summarize(TimeDiffVsDayM, median = median(timeDiff))
+#plot
+ByTimeUserPlot<- ggplot(TimeDiffVsDayM, aes(x = as.factor(sHour), y = median/60, colour = weekday))+
+  geom_line(data = SumByTimeDayM, aes(group = weekday))+
+  geom_point(data = SumByTimeDayM, aes(group = weekday))+
+  theme_hc(bgcolor = "darkunica") +
+  scale_colour_hc("darkunica")+
+  scale_x_discrete()+
+  scale_y_continuous(limits = c(-2,2), breaks = seq(-2,2,1))+
+  xlab('Hour')+
+  ylab('Timedifference in minutes')+
+  theme(axis.title = element_text(size=14), 
+        axis.text = element_text(size=8, face="bold"), 
+        title = element_text(size=14))+
+  ggtitle('Time difference by type of day, members')+
+  ggsave("plots/Time_diff_by_day.png")
+
+#-------------------------------------Day of the week, non-member-------------------------------------
+
+TimeDiffVsDayN<- group_by(filter(trips_df,usertype=="Short-Term Pass Holder"), sHour, weekday)
+SumByTimeDayN<- dplyr::summarize(TimeDiffVsDayN, median = median(timeDiff))
+#plot
+ByTimeUserPlot<- ggplot(TimeDiffVsDayN, aes(x = as.factor(sHour), y = median/60, colour = weekday))+
+  geom_line(data = SumByTimeDayN, aes(group = weekday))+
+  geom_point(data = SumByTimeDayN, aes(group = weekday))+
+  theme_hc(bgcolor = "darkunica") +
+  scale_colour_hc("darkunica")+
+  scale_x_discrete()+
+  scale_y_continuous(limits = c(0,20), breaks = seq(0,20,2))+
+  xlab('Hour')+
+  ylab('Timedifference in minutes')+
+  theme(axis.title = element_text(size=14), 
+        axis.text = element_text(size=8, face="bold"), 
+        title = element_text(size=14, vjust = 0.5))+
+  ggtitle('Time difference by type of day, non-member')+
+  ggsave("plots/Time_diff_by_day_nonmember.png")
+
+
+
+
+
+
 
 
 #plot over timedifference for trips by members and weather

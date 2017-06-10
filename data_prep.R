@@ -13,8 +13,7 @@ library(hydroTSM)
 library(data.table)
 library(ggthemes)
 library(scales)
-#install forcats
-library(forcats)
+
 
 #Comment out the other user.
 #setwd("/Users/tormagnusmichaelsen/Documents/BDA/Project/BDA17-Bike-Share-Analysis")
@@ -98,6 +97,13 @@ weather$Events[weather$Events== "Fog-Rain"] <- "Fog , Rain"
 weather$Events[weather$Events== "Rain-Snow"] <- "Rain , Snow"
 weather$Events[weather$Events== "Rain-Thunderstorm"] <- "Rain , Thunderstorm"
 weather$Events<-as.factor(weather$Events)
+
+#------------clean up weekday------------
+trips$weekday <- as.character(trips$weekday)
+trips$weekday[trips$weekday== "TRUE"] <- "Weekday"
+trips$weekday[trips$weekday== "FALSE"] <- "Weekend"
+
+trips$weekday<-as.factor(trips$weekday)
 #--------------merge weatherdata into trips-------
 
 weather$Date<-factor(weather$Date)
