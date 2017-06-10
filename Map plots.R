@@ -8,6 +8,10 @@ trips_df<-tbl_df(trips)
 trips_members<-filter(trips_df, usertype=="Member")
 trips_members_df<-tbl_df(trips_members)
 
+workHours<-c(7,8,9,10,15,16,17,18,19)
+otherHours<-c(1,2,3,4,5,6,11,12,13,14,20,21,22,23,24)
+
+
 #--------------------define map--------------------
 #package needed #install_version
 #("ggplot2", version = "2.1.0", repos = "http://cran.us.r-project.org")
@@ -125,8 +129,7 @@ map_fromPoints<-ggmap(seattle_toner) +
 #only look at a time interval, can do manually or assign a timetype to trips_df
 #filter out non-members?
 #also need to add target for timeslots
-workHours<-c(7,8,9,10,15,16,17,18,19)
-otherHours<-c(1,2,3,4,5,6,11,12,13,14,20,21,22,23,24)
+
               
 #add variable for morning or afternoon or middle of day?
 morning<-c(5,6,7,8,9)
@@ -187,6 +190,11 @@ mapAgecat2<-ggmap(seattle_toner,extent = "normal") +
                    color = Agecat2, 
                    alpha = opacity))  + coord_cartesian() + scale_alpha_identity() +
   scale_color_manual(values=c("#0434f2", "#06f702", "#fc0a2e"))+
+  geom_point(data = from_stations, 
+             aes(x = from_long,
+                 y = from_lat
+                 ),
+             alpha = 0.8) +
   ggtitle("Plot over trips by agegroups, 7-10am and 3-7pm")+
   ggsave("Triplegs for agecat2 workhours.png")
 
