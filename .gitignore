@@ -1,6 +1,9 @@
+# trips_processed is too big - run data_prep and store locally
+trips_processed.csv
+
 # API-keys
 gmapsAPIkey.txt
-
+google_elevation_api_key.txt
 #Mac-shit
 .DS_Store
 
