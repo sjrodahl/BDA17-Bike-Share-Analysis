@@ -24,7 +24,20 @@ p1 <- ggplot(data = userSum, aes( x = usertype, y = totalTrips)) +
 ggsave("plots/barplotByUsertype.png")
 #dev.off()
 
-
+#------------------weather distribution----------
+ggplot(data = weatherSum, aes( x = Events, y = numberOfDays)) + 
+  geom_bar(stat="identity",color='black',fill="#ff9e30")+
+  theme_hc(bgcolor = "darkunica") +
+  scale_colour_hc("darkunica")+
+  xlab("Weathertypes")+
+  ylab("Total number of days with weather")+
+  theme(axis.title = element_text(size=14), 
+        axis.text = element_text(size=12, face="bold"), 
+        title = element_text(size=16, vjust = 1.5))+
+  scale_y_continuous(breaks = seq(0,160000,25000))+
+  geom_text(aes(label=numberOfDays), vjust=1.5,size = 6, colour="#25333f")+
+  ggtitle("Number of days in dataset with different types of weather")
+ggsave("plots/weather_distr.png")
 
 #------------------------------Tripdistribution by month
 tripsByMonth<-group_by(trips_df[trips_df$sYear==2015,], sMonth, usertype)

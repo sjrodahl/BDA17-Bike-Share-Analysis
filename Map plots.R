@@ -1,12 +1,12 @@
 
 
-trips<-read.csv("data/trips_processed.csv", stringsAsFactors = FALSE, sep = ";") #Set nrows for testing purposes
-weather<-read.csv("data/weather_processed2.csv")
-stations<-read.csv("data/station.csv")
-
-trips_df<-tbl_df(trips)
-trips_members<-filter(trips_df, usertype=="Member")
-trips_members_df<-tbl_df(trips_members)
+# trips<-read.csv("data/trips_processed.csv", stringsAsFactors = FALSE, sep = ";") #Set nrows for testing purposes
+# weather<-read.csv("data/weather_processed2.csv")
+# stations<-read.csv("data/station.csv")
+# 
+# trips_df<-tbl_df(trips)
+# trips_members<-filter(trips_df, usertype=="Member")
+# trips_members_df<-tbl_df(trips_members)
 
 workHours<-c(7,8,9,10,15,16,17,18,19)
 otherHours<-c(1,2,3,4,5,6,11,12,13,14,20,21,22,23,24)
@@ -160,7 +160,7 @@ mapAgeGroups<-ggmap(seattle_toner,extent = "normal") +
                    color = Agecat1, 
                    alpha = opacity))  + coord_cartesian() + scale_alpha_identity()+
   ggtitle('Triplegs by agegroups, 7-10am and 3-7pm')+
-  ggsave('Triplegs by agegroups, working hours.png')
+  ggsave('Triplegs_workhours1.png')
 #if subset: data = subset(SumByAgeCatUnique, Agecat1 == 25-34,
 #if all agecats is wanted: data = SumByAgeCatUnique,
 
@@ -195,8 +195,11 @@ mapAgecat2<-ggmap(seattle_toner,extent = "normal") +
                  y = from_lat
                  ),
              alpha = 0.8) +
-  ggtitle("Plot over trips by agegroups, 7-10am and 3-7pm")+
-  ggsave("Triplegs for agecat2 workhours.png")
+  theme(axis.title = element_text(size=14), 
+        axis.text = element_text(size=10, face="bold"), 
+        title = element_text(size=14, vjust = 0.5))+
+  ggtitle("Triplegs by agegroups, 7-10am and 3-7pm")+
+  ggsave("plots/Triplegs_workhours2.png")
 
 #----------------------Map with trips by agecat2 for non-workhours---------------- 
 byAgecat2nonWork<-group_by(trips_df,from_station_id, to_station_id,Agecat2) %>% 

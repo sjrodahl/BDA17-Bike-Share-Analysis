@@ -16,8 +16,8 @@ library(scales)
 
 
 #Comment out the other user.
-#setwd("/Users/tormagnusmichaelsen/Documents/BDA/Project/BDA17-Bike-Share-Analysis")
-setwd("D:/Sondre/Dokumenter/UCSD/IRGN452 BigDataAnalytics/Project/BDA17-Bike-Share-Analysis/")
+setwd("/Users/tormagnusmichaelsen/Documents/BDA/Project/BDA17-Bike-Share-Analysis")
+#setwd("D:/Sondre/Dokumenter/UCSD/IRGN452 BigDataAnalytics/Project/BDA17-Bike-Share-Analysis/")
 
 trips<-read.csv("data/trip.csv", stringsAsFactors = FALSE, sep = ";") #Set nrows for testing purposes
 weather<-read.csv("data/weather.csv")
@@ -54,6 +54,8 @@ trips$onlySTime<-format(trips$onlySTime, "%H:%M:%S")
 #------------add day of week, from startDate
 trips$sDay<- lubridate::wday(trips$startDate, label = TRUE)
 trips$eDay<- lubridate::wday(trips$endDate, label = TRUE)
+trips$sDay<-factor(trips$sDay, levels=c('Mon', 'Tues', 'Wed', 'Thurs', 'Fri', 'Sat', 'Sun'))
+
 
 #------------add month, from startDate
 trips$sMonth<-lubridate::month(trips$startDate, label = TRUE)
@@ -92,11 +94,21 @@ trips$age<-2017 - trips$birthyear
 
 #--------------clean up weather$events-------
 weather$Events <- as.character(weather$Events)
-weather$Events[weather$Events== ""] <- ""
+weather$Events[weather$Events== ""] <- "Clear"
 weather$Events[weather$Events== "Fog-Rain"] <- "Fog , Rain"
 weather$Events[weather$Events== "Rain-Snow"] <- "Rain , Snow"
 weather$Events[weather$Events== "Rain-Thunderstorm"] <- "Rain , Thunderstorm"
 weather$Events<-as.factor(weather$Events)
+
+weather$Events <- as.character(weather$Events)
+weather$Events[weather$Events== "Fog , Rain"] <- "Rain, snow or thunderstorm or all"
+weather$Events[weather$Events== "Rain , Snow"] <- "Rain, snow or thunderstorm or all"
+weather$Events[weather$Events== "Rain , Thunderstorm"] <- "Rain, snow or thunderstorm or all"
+weather$Events[weather$Events== "Rain"] <- "Rain, snow or thunderstorm or all"
+weather$Events[weather$Events== "Snow"] <- "Rain, snow or thunderstorm or all"
+weather$Events<-as.factor(weather$Events)
+
+
 
 #------------clean up weekday------------
 trips$weekday <- as.character(trips$weekday)

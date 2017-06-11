@@ -1,8 +1,4 @@
 "","Events","numberOfDays"
-"","",361
+"Clear","Clear",361
 "Fog","Fog",16
-"Fog , Rain","Fog , Rain",13
-"Rain","Rain",287
-"Rain , Snow","Rain , Snow",3
-"Rain , Thunderstorm","Rain , Thunderstorm",7
-"Snow","Snow",2
+"Rain, snow or thunderstorm or all","Rain, snow or thunderstorm or all",312
