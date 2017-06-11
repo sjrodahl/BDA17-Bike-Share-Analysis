@@ -29,7 +29,7 @@ write.csv(distance.matrix.coord, file = 'distanceMatrix.csv')
 
 #write csv file for each dataframe
 
-write.csv(distance.matrix.coord$Time, file = 'gmapsTimeMatrix.csv')
+write.csv(distance.matrix.walk.coord$Time, file = 'gmapsWalkTimeMatrix.csv')
 write.csv(distance.matrix.coord$Distance, file = 'gmapsDistMatrix.csv')
 write.csv(distance.matrix.coord$Status, file = 'gmapsStatusMatrix.csv')
 # Import some trips
