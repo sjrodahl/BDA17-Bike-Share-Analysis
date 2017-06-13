@@ -241,6 +241,20 @@ trips$sMonth<-as.factor(trips$sMonth)
 
 #trips_df$fromStationGroup<-stri_extract(trips$from_station_id, regex='[^-]*')
 
+#Add elevation data
+elevation_api_key <- readLines("google_elevation_api_key.txt")
+
+stations$elevation <- 0
+for (i in 1:nrow(stations)){
+  df_loc <- data.frame(lat=stations$lat[i], lon=stations$long[i])
+  elev <- google_elevation(df_locations = df_loc, key = elevation_api_key)
+  stations$elevation[i] <- elev[[1]][[1]]
+}
+
+trips$from_elevation <- stations$elevation[match(trips$from_station_id,stations$station_id)]
+trips$to_elevation <- stations$elevation[match(trips$to_station_id,stations$station_id)]
+trips$elevation_diff <- trips$to_elevation-trips$from_elevation
+
 
 write.csv(weatherSum,"data/weatherSum.csv")
 write.csv(trips, "data/trips_processed.csv")
