@@ -6,6 +6,7 @@ gmapsAPIkey.txt
 google_elevation_api_key.txt
 #Mac-shit
 .DS_Store
+test.tiff
 
 # History files
 .Rhistory

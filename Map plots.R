@@ -1,12 +1,16 @@
 
 
-trips<-read.csv("data/trips_processed.csv", stringsAsFactors = FALSE, sep = ";") #Set nrows for testing purposes
-weather<-read.csv("data/weather_processed2.csv")
-stations<-read.csv("data/station.csv")
+# trips<-read.csv("data/trips_processed.csv", stringsAsFactors = FALSE, sep = ";") #Set nrows for testing purposes
+# weather<-read.csv("data/weather_processed2.csv")
+# stations<-read.csv("data/station.csv")
+# 
+# trips_df<-tbl_df(trips)
+# trips_members<-filter(trips_df, usertype=="Member")
+# trips_members_df<-tbl_df(trips_members)
 
-trips_df<-tbl_df(trips)
-trips_members<-filter(trips_df, usertype=="Member")
-trips_members_df<-tbl_df(trips_members)
+workHours<-c(7,8,9,10,15,16,17,18,19)
+otherHours<-c(1,2,3,4,5,6,11,12,13,14,20,21,22,23,24)
+
 
 #--------------------define map--------------------
 #package needed #install_version
@@ -125,8 +129,7 @@ map_fromPoints<-ggmap(seattle_toner) +
 #only look at a time interval, can do manually or assign a timetype to trips_df
 #filter out non-members?
 #also need to add target for timeslots
-workHours<-c(7,8,9,10,15,16,17,18,19)
-otherHours<-c(1,2,3,4,5,6,11,12,13,14,20,21,22,23,24)
+
               
 #add variable for morning or afternoon or middle of day?
 morning<-c(5,6,7,8,9)
@@ -157,7 +160,7 @@ mapAgeGroups<-ggmap(seattle_toner,extent = "normal") +
                    color = Agecat1, 
                    alpha = opacity))  + coord_cartesian() + scale_alpha_identity()+
   ggtitle('Triplegs by agegroups, 7-10am and 3-7pm')+
-  ggsave('Triplegs by agegroups, working hours.png')
+  ggsave('Triplegs_workhours1.png')
 #if subset: data = subset(SumByAgeCatUnique, Agecat1 == 25-34,
 #if all agecats is wanted: data = SumByAgeCatUnique,
 
@@ -187,8 +190,16 @@ mapAgecat2<-ggmap(seattle_toner,extent = "normal") +
                    color = Agecat2, 
                    alpha = opacity))  + coord_cartesian() + scale_alpha_identity() +
   scale_color_manual(values=c("#0434f2", "#06f702", "#fc0a2e"))+
-  ggtitle("Plot over trips by agegroups, 7-10am and 3-7pm")+
-  ggsave("Triplegs for agecat2 workhours.png")
+  geom_point(data = from_stations, 
+             aes(x = from_long,
+                 y = from_lat
+                 ),
+             alpha = 0.8) +
+  theme(axis.title = element_text(size=14), 
+        axis.text = element_text(size=10, face="bold"), 
+        title = element_text(size=14, vjust = 0.5))+
+  ggtitle("Triplegs by agegroups, 7-10am and 3-7pm")+
+  ggsave("plots/Triplegs_workhours2.png")
 
 #----------------------Map with trips by agecat2 for non-workhours---------------- 
 byAgecat2nonWork<-group_by(trips_df,from_station_id, to_station_id,Agecat2) %>% 
@@ -216,8 +227,16 @@ mapAgecat2nonWork<-ggmap(seattle_toner,extent = "normal") +
                    color = Agecat2, 
                    alpha = opacity))  + coord_cartesian() + scale_alpha_identity() +
   scale_color_manual(values=c("#0434f2", "#06f702", "#fc0a2e"))+
-  ggtitle("Plot over trips for hours other than 7-10am and 3-7pm")+
-  ggsave("plots/agecat2 nonWork.png")
+  geom_point(data = from_stations, 
+             aes(x = from_long,
+                 y = from_lat
+             ),
+             alpha = 0.8) +
+  theme(axis.title = element_text(size=14), 
+        axis.text = element_text(size=10, face="bold"), 
+        title = element_text(size=14))+
+  ggtitle("Triplegs for hours other than 7-10am and 3-7pm")+
+  ggsave("plots/Triplegs_nonwork2.png")
 
 #if subset: data = subset(SumByAgeCatUnique, Agecat1 == 25-34,
 #if all agecats is wanted: data = SumByAgeCatUnique,
@@ -316,7 +335,7 @@ alpha = opacity), color = "#f7020e"
 
 
 
-#-----------------------maps for different agecats, satellite--------------------
+#-----------------------maps for different agecats, toner--------------------
 tonermapAgeGroups1<-ggmap(seattle_toner,extent = "normal") + 
   geom_segment(stat="identity",data=subset(SumByAgeCatUnique1, Agecat1 == "19-24"), 
                aes(
@@ -324,7 +343,7 @@ tonermapAgeGroups1<-ggmap(seattle_toner,extent = "normal") +
                  y = from_lat, 
                  xend = to_long, 
                  yend = to_lat, 
-                 alpha = opacity), color = "#f7020e"
+                 alpha = opacity), color = "#155e38"
   )  + coord_cartesian() + scale_alpha_identity() +
 
 ggtitle('Total number of trips, age 19-24')+
@@ -337,7 +356,7 @@ tonermapAgeGroups2<-ggmap(seattle_toner,extent = "normal") +
                  y = from_lat, 
                  xend = to_long, 
                  yend = to_lat, 
-                 alpha = opacity), color = "#f7020e"
+                 alpha = opacity), color = "#155e38"
   )  + coord_cartesian() + scale_alpha_identity() +
 ggtitle('Total number of trips, age 25-34')+
   ggsave('Total number of trips, age 25-34.png')
@@ -349,7 +368,7 @@ tonermapAgeGroups3<-ggmap(seattle_toner,extent = "normal") +
                  y = from_lat, 
                  xend = to_long, 
                  yend = to_lat, 
-                 alpha = opacity), color = "#f7020e"
+                 alpha = opacity), color = "#155e38"
   )  + coord_cartesian() + scale_alpha_identity() +
 
 ggtitle('Total number of trips, age 35-44')+
@@ -362,7 +381,7 @@ tonermapAgeGroups4<-ggmap(seattle_toner,extent = "normal") +
                  y = from_lat, 
                  xend = to_long, 
                  yend = to_lat, 
-                 alpha = opacity), color = "#f7020e"
+                 alpha = opacity), color = "#155e38"
   )  + coord_cartesian() + scale_alpha_identity() +
   ggtitle('Total number of trips, age 45-54')+
   ggsave('Total number of trips, age 45-54.png')
@@ -375,7 +394,7 @@ tonermapAgeGroups5<-ggmap(seattle_toner,extent = "normal") +
                  y = from_lat, 
                  xend = to_long, 
                  yend = to_lat, 
-                 alpha = opacity), color = "#f7020e"
+                 alpha = opacity), color = "#155e38"
   )  + coord_cartesian() + scale_alpha_identity() +
   ggtitle('Total number of trips, age 55-62')+
   ggsave('Total number of trips, age 55-62.png')
@@ -387,7 +406,7 @@ tonermapAgeGroups6<-ggmap(seattle_toner,extent = "normal") +
                  y = from_lat, 
                  xend = to_long, 
                  yend = to_lat, 
-                 alpha = opacity), color = "#f7020e"
+                 alpha = opacity), color = "#155e38"
   )  + coord_cartesian() + scale_alpha_identity() +
   ggtitle('Total number of trips, age 63-81')+
   ggsave('Total number of trips, age 63-81.png')
@@ -403,7 +422,7 @@ ggsave('plots/multiple plot trips by agegroups, satellite.png')
 plot2 <- multiplot(tonermapAgeGroups1, tonermapAgeGroups2, tonermapAgeGroups3, tonermapAgeGroups4, tonermapAgeGroups5, tonermapAgeGroups6, cols = 3)+
 
 #ggtitle('title.png')+
-  ggsave('plots/multiple plot trips by agegroups, toner-lite.png')
+  ggsave('plots/multiple_plot-toner.png')
 
 
 

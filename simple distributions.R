@@ -1,6 +1,85 @@
+
+
+
+
+#------------------------------Simple distributions-----------------------------
+
+#------------------------------Total distribution of trips of entire dataset
+#tiff('test.tiff', units="in", width=15, height=20, res=300)
+userSum<-summary(trips$usertype)
+userSum<-data.frame(usertype=names(userSum), totalTrips=userSum)
+
+p1 <- ggplot(data = userSum, aes( x = usertype, y = totalTrips)) + 
+  geom_bar(stat="identity",color='black',fill="#ff9e30")+
+  theme_hc(bgcolor = "darkunica") +
+  scale_colour_hc("darkunica")+
+  xlab("Usertype")+
+  ylab("Total number of trips taken")+
+  theme(axis.title = element_text(size=14), 
+        axis.text = element_text(size=12, face="bold"), 
+        title = element_text(size=16, vjust = 1.5))+
+  scale_y_continuous(breaks = seq(0,160000,25000))+
+  geom_text(aes(label=totalTrips), vjust=1.5,size = 6, colour="#25333f")+
+  ggtitle("Number of trips taken by members and non-members")
+ggsave("plots/barplotByUsertype.png")
+#dev.off()
+
+#------------------weather distribution----------
+ggplot(data = weatherSum, aes( x = Events, y = numberOfDays)) + 
+  geom_bar(stat="identity",color='black',fill="#ff9e30")+
+  theme_hc(bgcolor = "darkunica") +
+  scale_colour_hc("darkunica")+
+  xlab("Weathertypes")+
+  ylab("Total number of days with weather")+
+  theme(axis.title = element_text(size=14), 
+        axis.text = element_text(size=12, face="bold"), 
+        title = element_text(size=16, vjust = 1.5))+
+  scale_y_continuous(breaks = seq(0,160000,25000))+
+  geom_text(aes(label=numberOfDays), vjust=1.5,size = 6, colour="#25333f")+
+  ggtitle("Number of days in dataset with different types of weather")
+ggsave("plots/weather_distr.png")
+
+#------------------------------Tripdistribution by month
+tripsByMonth<-group_by(trips_df[trips_df$sYear==2015,], sMonth, usertype)
+sumByMonth<-dplyr::summarize(tripsByMonth, trips = n())
+levels(sumByMonth$usertype)<-c("Member","Short-Term Pass Holder")
+
+sumByMonth$sMonth<-factor(sumByMonth$sMonth, levels=month.abb, ordered = TRUE)
+fill = c("#ff9e30", "#5c616b")
+
+monthlyTrips<-ggplot(tripsByMonth, aes(x = sMonth, y= trips))+
+  geom_bar(data = sumByMonth, stat = "identity", aes(fill = usertype),position = position_stack(reverse = TRUE)) +
+  theme_hc(bgcolor = "darkunica") +
+  scale_colour_hc("darkunica")+
+  scale_fill_manual(values = fill)+
+  xlab("Month")+
+  ylab("Total number of trips taken")+
+  theme(axis.title = element_text(size=14), 
+        axis.text = element_text(size=12, face="bold"), 
+        title = element_text(size=14, vjust = 0.5))+
+  scale_y_continuous(breaks = seq(0,22000,2000))+
+  #geom_text(aes(label=sumByMonth$trips), vjust=1.5,size = 6, colour="#25333f")+
+  ggtitle("Trips taken by members and non-members")
+ggsave("plots/trips_by_months.png")
+
+
+#------------------------------Agedistribution
+
 #agedistribution over trips
-p1 <- ggplot(data = trips, aes(x = age)) + geom_histogram(binwidth = 1, color='black',fill='orange') + scale_x_continuous(breaks = seq(15,81,5))
-p1
+ageplot <- ggplot(data = trips, aes(x = age)) + 
+  geom_histogram(binwidth = 1, color = 'black', fill = '#ff9e30') + 
+  theme_hc(bgcolor = "darkunica") +
+  scale_colour_hc("darkunica")+
+  xlab("Age")+
+  ylab("Trips")+
+  theme(axis.title = element_text(size=14), 
+        axis.text = element_text(size=12, face="bold"), 
+        title = element_text(size=14, vjust = 1.5))+
+  scale_x_continuous(breaks = seq(15,81,5))+
+  scale_y_continuous(breaks = seq(0,14000,2000))
+  ggtitle("Distribution of age across all trips")
+ggsave("plots/Agedistribution_of_trips.png")
+
 
 #----------station plot--------
 stationDistr<-ggplot(data = trips, aes(x = to_station_name)) + geom_bar(color='black',fill='orange') + 
