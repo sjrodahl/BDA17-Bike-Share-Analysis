@@ -10,6 +10,7 @@ trips$sDay<-factor(trips$sDay, levels=c('Mon', 'Tues', 'Wed', 'Thurs', 'Fri', 'S
 
 trips_df<-tbl_df(trips)
 trips_members<-filter(trips_df, usertype=="Member")
+trips_nonmembers<-filter(trips_df, usertype!="Member")
 trips_members_df<-tbl_df(trips_members)
 
 
@@ -208,8 +209,30 @@ hourlyPlotMemberByWeather<-ggplot(hourlyMemberByWeather, aes(x = as.factor(sHour
   ggtitle('Hourly trips for members, in different weather, averaged')+
   ggsave("plots/Hourly trips across usertype, averaged over weather.png")
 
+trips_nonmembers$Events <- ifelse(trips_nonmembers$Events=="", "Clear", ifelse(trips_nonmembers$Events=="Fog","Fog", "Rain, snow or thunderstorm or all"))
 
+#Edit values of WeatherSum
+weatherSum$X<-as.character(weatherSum$X)
+weatherSum$Events<-as.character(weatherSum$Events)
+clearRow <- c("Clear", "Clear", weatherSum[weatherSum$Events=="", "numberOfDays"])
+comboRow <- c("Rain, snow or thunderstorm or all", "Rain, snow or thunderstorm or all", sum(weatherSum[weatherSum$Events!="" & weatherSum$Events!="Fog", "numberOfDays"]))
+weatherSum<-rbind(weatherSum, clearRow, comboRow)
 
+hourlyNonmemberByWeather <- group_by(trips_nonmembers, sHour, Events) %>% dplyr::summarise(rentals = n())
+hourlyNonmemberByWeather$totalDays <- as.numeric(weatherSum$numberOfDays[match(hourlyNonmemberByWeather$Events, weatherSum$Events)])
+hourlyPlotNonmemberByWeather<-ggplot(hourlyNonmemberByWeather, aes(x = as.factor(sHour), y = rentals/totalDays, colour = Events))+
+  geom_line(data = hourlyNonmemberByWeather, aes(group = Events), size=1.1)+
+  geom_point(data = hourlyNonmemberByWeather, aes(group = Events), size=1.9) +
+  scale_x_discrete()+
+  scale_y_continuous()+
+  xlab('Hour')+
+  ylab('Rentals')+
+  ggtitle('Trips by Short-Term Pass Holders, across weather')+
+  theme(axis.title = element_text(size=18), 
+        axis.text = element_text(size=14, face="bold"), 
+        title = element_text(size=22), legend.text = element_text(size=14))+
+  theme_hc(bgcolor = "darkunica") +
+  scale_colour_hc("darkunica")
 #!!!!!!!!!!! plot this over different agegroups to see if there's any difference?
 
 #-------------------------------------timedifferences-------------------------------------
